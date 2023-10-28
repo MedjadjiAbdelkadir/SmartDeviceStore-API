@@ -20,21 +20,21 @@
 ## Description
 Smart Device Store RESTful API clone.
 
-## Technologies Used in Server 
+## Technologies Used 
 - NodeJS
 - Express
 - PostgreSQL 
 
 ## Feature
   - Authentication
-  - User management
-  - Category management
-  - SubCategory management
-  - Brand management
-  - Product management
-  - Review management
-  - Coupon management
-  - Order management
+  - User Management
+  - Category Management
+  - SubCategory Management
+  - Brand Management
+  - Product Management
+  - Review Management
+  - Coupon Management
+  - Order Management
 
 ## Installation
 
@@ -62,12 +62,12 @@ PATH_LOG: path logs error
 
 # Database 
 DATABASE_URL= database url must be string
-DATABASE_TYPE= database system 'postgres','mysql', 'sqlite', 'mssql'
+DATABASE_TYPE= database system 'postgres'
 
 
 # JWT  
 JWT_SECRET_KEY  : should be at lest 32 character
-JWT_EXPIRATION  : expiration token in min or h or days
+JWT_EXPIRATION  : expiration token in min or h or day
 
 # Hashing  
 PASSWORD_SALT : should be between 10 and 12
