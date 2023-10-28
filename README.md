@@ -84,7 +84,7 @@ EMAIL_PASSWORD : sender email password
 ## How To Use 
 <b>Authentication</b>
 
-| Feature                 | Method |                  Url               |     Role & Access    |
+| Feature                 | Method |                Url                 |     Role & Access    |
 |-------------------------|--------|------------------------------------|----------------------|
 | Register                | POST   | baseUrl/api/auth/register          | Public               |
 | Login                   | POST   | baseUrl/api/auth/login             | Public               |
@@ -95,14 +95,14 @@ EMAIL_PASSWORD : sender email password
 
 <b>User</b>
 
-| Feature                 | Method |                  Url               |     Role & Access    |
+| Feature                 | Method |                Url                 |     Role & Access    |
 |-------------------------|--------|------------------------------------|----------------------|
 | Profile                 | GET    | baseUrl/api/user/profile           | Private User/Auth    |
 | Update Profile          | PATCH  | baseUrl/api/auth/profile           | Private User/Auth    |
 
 <b>Category</b>
 
-| Feature                 | Method |                  Url               |     Role & Access    |
+| Feature                 | Method |                Url                 |     Role & Access    |
 |-------------------------|--------|------------------------------------|----------------------|
 | Get All Categories      | GET    | baseUrl/api/categories             | Private Admin/Auth   |
 | Get Single Category     | GET    | baseUrl/api/categories/:id         | Private Admin/Auth   |
@@ -112,7 +112,7 @@ EMAIL_PASSWORD : sender email password
 
 <b>SubCategory</b>
 
-| Feature                 | Method |                  Url               |     Role & Access    |
+| Feature                 | Method |                Url                 |     Role & Access    |
 |-------------------------|--------|------------------------------------|----------------------|
 | Get All SubCategories   | GET    | baseUrl/api/subcategories          | Private Admin/Auth   |
 | Get Single SubCategory  | GET    | baseUrl/api/subcategories/:id      | Private Admin/Auth   |
@@ -122,7 +122,7 @@ EMAIL_PASSWORD : sender email password
 
 <b>Brand</b>
 
-| Feature                 | Method |                  Url               |     Role & Access    |
+| Feature                 | Method |                Url                 |     Role & Access    |
 |-------------------------|--------|------------------------------------|----------------------|
 | Get All Brands          | GET    | baseUrl/api/brands                 | Private Admin/Auth   |
 | Get Single Brand        | GET    | baseUrl/api/brands/:id             | Private Admin/Auth   |
@@ -132,7 +132,7 @@ EMAIL_PASSWORD : sender email password
 
 <b>Product</b>
 
-| Feature                 | Method |                  Url               |     Role & Access    |
+| Feature                 | Method |                Url                 |     Role & Access    |
 |-------------------------|--------|------------------------------------|----------------------|
 | Get All Products        | GET    | baseUrl/api/products               | Public               |
 | Get Single Product      | GET    | baseUrl/api/products/:id           | Public               |
@@ -140,24 +140,6 @@ EMAIL_PASSWORD : sender email password
 | Update Product          | PATCH  | baseUrl/api/products/:id           | Private User/Auth    |
 | Delete Product          | DELETE | baseUrl/api/products/:id           | Private User/Auth    |
 
-------------------------------------------
 
-<b>Brand</b>
-
-| Feature                 | Method |                  Url               |     Role & Access    |
-|-------------------------|--------|------------------------------------|----------------------|
-| Get All Brands          | GET    | baseUrl/api/brands                 | Private Admin/Auth   |
-| Get Single Brand        | GET    | baseUrl/api/brands/:id             | Private Admin/Auth   |
-| Create Brands           | POST   | baseUrl/api/brands                 | Private Admin/Auth   |
-| Update Brands           | PATCH  | baseUrl/api/brands/:id             | Private Admin/Auth   |
-| Delete Brands           | DELETE | baseUrl/api/brands/:id             | Private Admin/Auth   |
-|-------------------------|--------|------------------------------------|----------------------|
-|                               Products                                                       |
-|-------------------------|--------|------------------------------------|----------------------|
-| Get All Products        | GET    | baseUrl/api/products               | Public               |
-| Get Single Product      | GET    | baseUrl/api/products/:id           | Public               |
-| Create Product          | POST   | baseUrl/api/products               | Private User/Auth    |
-| Update Product          | PATCH  | baseUrl/api/products/:id           | Private User/Auth    |
-| Delete Product          | DELETE | baseUrl/api/products/:id           | Private User/Auth    |
 
  
