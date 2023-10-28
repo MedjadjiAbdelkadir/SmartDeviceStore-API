@@ -1,4 +1,4 @@
-# SmartDeviceStore Server
+# SmartDeviceStore API
 ![Static Badge](https://img.shields.io/badge/19.4.0-Node.Js-green)
 ![Static Badge](https://img.shields.io/badge/4.18.2-Express.Js-blue)
 ![Static Badge](https://img.shields.io/badge/8.11.3-pg-blue)
