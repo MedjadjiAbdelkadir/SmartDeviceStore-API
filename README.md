@@ -27,8 +27,6 @@ Smart Device Store RESTful API clone.
 
 ## Feature
   - Authentication
-  - Authentication
-  - Authorization
   - User management
   - Category management
   - SubCategory management
