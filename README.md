@@ -43,7 +43,7 @@ To run this project, you need to have Node.js and PostgreSQL installed on your s
 1. Clone this repository: `git clone https://github.com/MedjadjiAbdelkadir/SmartDeviceStore-API.git`
 2. Install the dependencies: `npm install`
 3. Open the PostgreSQL and execute the following command :
-```Bash
+```sql
 $ CREATE DATABASE SmartDeviceStore;
 $ CREATE USER adminStore WITH ENCRYPTED PASSWORD 'password123456';
 $ GRANT ALL PRIVILEGES ON DATABASE SmartDeviceStore TO adminStore;
@@ -160,6 +160,3 @@ EMAIL_PASSWORD : sender email password
 | Update Coupon           | PATCH  | baseUrl/api/coupons/:id            | Private Admin        |
 | Delete Coupon           | DELETE | baseUrl/api/coupons/:id            | Private Admin        |
 
-
-
- 
