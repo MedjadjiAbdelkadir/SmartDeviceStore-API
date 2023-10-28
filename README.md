@@ -81,7 +81,7 @@ EMAIL_PASSWORD : sender email password
 ```
 5. Start the server: `npm run start`
 
-## How To Use : 
+## How To Use 
 <b>Authentication</b>
 
 | Feature          | Method | Route                       | Access       |
@@ -109,4 +109,24 @@ EMAIL_PASSWORD : sender email password
 | Create Category  | POST   | /api/categories             | Private Admin/Auth   |
 | Update Category  | PATCH  | /api/categories/:id         | Private Admin/Auth   |
 | Delete Category  | DELETE | /api/categories/:id         | Private Admin/Auth   |
+
+<b>SubCategory</b>
+
+| Feature             | Method | Route                          |     Role & Access    |
+|------------------   |:------:|:------------------------------:|:---------------------|
+| Get SubCategories   | GET    | /api/subcategories             | Private Admin/Auth   |
+| Get SubCategory     | GET    | /api/subcategories/:id         | Private Admin/Auth   |
+| Create SubCategory  | POST   | /api/subcategories             | Private Admin/Auth   |
+| Update SubCategory  | PATCH  | /api/subcategories/:id         | Private Admin/Auth   |
+| Delete SubCategory  | DELETE | /api/subcategories/:id         | Private Admin/Auth   |
+
+<b>Brand</b>
+
+| Feature        | Method | Route                   |     Role & Access    |
+|----------------|--------|-------------------------| ---------------------|
+| Get Brands     | GET    | /api/brands             | Private Admin/Auth   |
+| Get Brands     | GET    | /api/brands/:id         | Private Admin/Auth   |
+| Create Brands  | POST   | /api/brands             | Private Admin/Auth   |
+| Update Brands  | PATCH  | /api/brands/:id         | Private Admin/Auth   |
+| Delete Brands  | DELETE | /api/brands/:id         | Private Admin/Auth   |
 
