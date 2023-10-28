@@ -104,8 +104,8 @@ EMAIL_PASSWORD : sender email password
 
 | Feature                 | Method |                Url                 |     Role & Access    |
 |-------------------------|--------|------------------------------------|----------------------|
-| Get All Categories      | GET    | baseUrl/api/categories             | Private Admin/Auth   |
-| Get Single Category     | GET    | baseUrl/api/categories/:id         | Private Admin/Auth   |
+| Get All Categories      | GET    | baseUrl/api/categories             | Public               |
+| Get Single Category     | GET    | baseUrl/api/categories/:id         | Public               |
 | Create Category         | POST   | baseUrl/api/categories             | Private Admin/Auth   |
 | Update Category         | PATCH  | baseUrl/api/categories/:id         | Private Admin/Auth   |
 | Delete Category         | DELETE | baseUrl/api/categories/:id         | Private Admin/Auth   |
@@ -114,8 +114,8 @@ EMAIL_PASSWORD : sender email password
 
 | Feature                 | Method |                Url                 |     Role & Access    |
 |-------------------------|--------|------------------------------------|----------------------|
-| Get All SubCategories   | GET    | baseUrl/api/subcategories          | Private Admin/Auth   |
-| Get Single SubCategory  | GET    | baseUrl/api/subcategories/:id      | Private Admin/Auth   |
+| Get All SubCategories   | GET    | baseUrl/api/subcategories          | Public               |
+| Get Single SubCategory  | GET    | baseUrl/api/subcategories/:id      | Public               |
 | Create SubCategory      | POST   | baseUrl/api/subcategories          | Private Admin/Auth   |
 | Update SubCategory      | PATCH  | baseUrl/api/subcategories/:id      | Private Admin/Auth   |
 | Delete SubCategory      | DELETE | baseUrl/api/subcategories/:id      | Private Admin/Auth   |
@@ -124,8 +124,8 @@ EMAIL_PASSWORD : sender email password
 
 | Feature                 | Method |                Url                 |     Role & Access    |
 |-------------------------|--------|------------------------------------|----------------------|
-| Get All Brands          | GET    | baseUrl/api/brands                 | Private Admin/Auth   |
-| Get Single Brand        | GET    | baseUrl/api/brands/:id             | Private Admin/Auth   |
+| Get All Brands          | GET    | baseUrl/api/brands                 | Public               |
+| Get Single Brand        | GET    | baseUrl/api/brands/:id             | Public               |
 | Create Brands           | POST   | baseUrl/api/brands                 | Private Admin/Auth   |
 | Update Brands           | PATCH  | baseUrl/api/brands/:id             | Private Admin/Auth   |
 | Delete Brands           | DELETE | baseUrl/api/brands/:id             | Private Admin/Auth   |
@@ -139,6 +139,26 @@ EMAIL_PASSWORD : sender email password
 | Create Product          | POST   | baseUrl/api/products               | Private User/Auth    |
 | Update Product          | PATCH  | baseUrl/api/products/:id           | Private User/Auth    |
 | Delete Product          | DELETE | baseUrl/api/products/:id           | Private User/Auth    |
+
+<b>Review</b>
+
+| Feature                 | Method |                Url                 |     Role & Access    |
+|-------------------------|--------|------------------------------------|----------------------|
+| Get All Reviews         | GET    | baseUrl/api/reviews                | Public               |
+| Get Single Review       | GET    | baseUrl/api/reviews/:id            | Public               |
+| Create Review           | POST   | baseUrl/api/reviews                | Private User/Auth    |
+| Update Review           | PATCH  | baseUrl/api/reviews/:id            | Private User/Auth    |
+| Delete Review           | DELETE | baseUrl/api/reviews/:id            | Private User/Admin   |
+
+<b>Coupon</b>
+
+| Feature                 | Method |                Url                 |     Role & Access    |
+|-------------------------|--------|------------------------------------|----------------------|
+| Get All Coupons         | GET    | baseUrl/api/coupons                | Private Admin        |
+| Get Single Coupon       | GET    | baseUrl/api/coupons/:id            | Private Admin        |
+| Create Coupon           | POST   | baseUrl/api/coupons                | Private Admin        |
+| Update Coupon           | PATCH  | baseUrl/api/coupons/:id            | Private Admin        |
+| Delete Coupon           | DELETE | baseUrl/api/coupons/:id            | Private Admin        |
 
 
 
