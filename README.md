@@ -109,4 +109,4 @@ EMAIL_PASSWORD : sender email password
 | Create Category  | POST   | /api/categories             | Private Admin/Auth   |
 | Update Category  | PATCH  | /api/categories/:id         | Private Admin/Auth   |
 | Delete Category  | DELETE | /api/categories/:id         | Private Admin/Auth   |
-| Get Category     | GET    | /api/categories/:id         | Private Admin/Auth   |
+
