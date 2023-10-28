@@ -81,3 +81,32 @@ EMAIL_PASSWORD : sender email password
 ```
 5. Start the server: `npm run start`
 
+## How To Use : 
+<b>Authentication</b>
+
+| Feature          | Method | Route                       | Access       |
+|------------------|:------:|:---------------------------:|:-------------|
+| Register         | POST   | /api/auth/register          | Public       |
+| Login            | POST   | /api/auth/login             | Public       |
+| Forgot Password  | POST   | /api/auth/forgotPassword    | Public       |
+| Verify ResetCode | POST   | /api/auth/verifyResetCode   | Public       |
+| Reset Password   | POST   | /api/auth/resetPassword     | Public       |
+
+
+<b>User</b>
+
+| Feature          | Method | Route                       |     Role & Access    |
+|------------------|:------:|:---------------------------:|:---------------------|
+| Profile          | GET    | /api/user/profile           | Private User/Auth    |
+| Update Profile   | PATCH  | /api/auth/profile           | Private User/Auth    |
+
+<b>Category</b>
+
+| Feature          | Method | Route                       |     Role & Access    |
+|------------------|:------:|:---------------------------:|:---------------------|
+| Get Categories   | GET    | /api/categories             | Private Admin/Auth   |
+| Get Category     | GET    | /api/categories/:id         | Private Admin/Auth   |
+| Create Category  | POST   | /api/categories             | Private Admin/Auth   |
+| Update Category  | PATCH  | /api/categories/:id         | Private Admin/Auth   |
+| Delete Category  | DELETE | /api/categories/:id         | Private Admin/Auth   |
+| Get Category     | GET    | /api/categories/:id         | Private Admin/Auth   |
