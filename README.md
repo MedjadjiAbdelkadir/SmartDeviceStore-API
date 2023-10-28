@@ -21,7 +21,22 @@
 Smart Device Store RESTful API clone.
 
 ## Technologies Used in Server 
-- NodeJS,Express,PostgreSQL 
+- NodeJS
+- Express
+- PostgreSQL 
+
+## Feature
+  - Authentication
+  - Authentication
+  - Authorization
+  - User management
+  - Category management
+  - SubCategory management
+  - Brand management
+  - Product management
+  - Review management
+  - Coupon management
+  - Order management
 
 ## Installation
 
@@ -51,14 +66,12 @@ PATH_LOG: path logs error
 DATABASE_URL= database url must be string
 DATABASE_TYPE= database system 'postgres','mysql', 'sqlite', 'mssql'
 
-# Hashing  
-PASSWORD_SALT  : 10
 
-# JWT Configuration 
+# JWT  
 JWT_SECRET_KEY  : should be at lest 32 character
 JWT_EXPIRATION  : expiration token in min or h or days
 
-# Hashing Configuration 
+# Hashing  
 PASSWORD_SALT : should be between 10 and 12
 
 # NODEMAILER
@@ -69,5 +82,4 @@ EMAIL_PASSWORD : sender email password
 
 ```
 5. Start the server: `npm run start`
-
 
