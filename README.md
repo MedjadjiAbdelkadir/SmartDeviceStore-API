@@ -84,49 +84,60 @@ EMAIL_PASSWORD : sender email password
 ## How To Use 
 <b>Authentication</b>
 
-| Feature          | Method | Route                       | Access       |
-|------------------|--------|-----------------------------|--------------|
-| Register         | POST   | /api/auth/register          | Public       |
-| Login            | POST   | /api/auth/login             | Public       |
-| Forgot Password  | POST   | /api/auth/forgotPassword    | Public       |
-| Verify ResetCode | POST   | /api/auth/verifyResetCode   | Public       |
-| Reset Password   | POST   | /api/auth/resetPassword     | Public       |
+| Feature                 | Method |                  Url               |     Role & Access    |
+|-------------------------|--------|------------------------------------|----------------------|
+| Register                | POST   | baseUrl/api/auth/register          | Public               |
+| Login                   | POST   | baseUrl/api/auth/login             | Public               |
+| Forgot Password         | POST   | baseUrl/api/auth/forgotPassword    | Public               |
+| Verify ResetCode        | POST   | baseUrl/api/auth/verifyResetCode   | Public               |
+| Reset Password          | POST   | baseUrl/api/auth/resetPassword     | Public               |
 
 
 <b>User</b>
 
-| Feature          | Method | Route                       |     Role & Access    |
-|------------------|--------|-----------------------------|----------------------|
-| Profile          | GET    | /api/user/profile           | Private User/Auth    |
-| Update Profile   | PATCH  | /api/auth/profile           | Private User/Auth    |
+| Feature                 | Method |                  Url               |     Role & Access    |
+|-------------------------|--------|------------------------------------|----------------------|
+| Profile                 | GET    | baseUrl/api/user/profile           | Private User/Auth    |
+| Update Profile          | PATCH  | baseUrl/api/auth/profile           | Private User/Auth    |
 
 <b>Category</b>
 
-| Feature                 | Method | Route                          |     Role & Access    |
-|-------------------------|--------|--------------------------------|----------------------|
-| Get All Categories      | GET    | /api/categories             | Private Admin/Auth   |
-| Get Single Category     | GET    | /api/categories/:id         | Private Admin/Auth   |
-| Create Category         | POST   | /api/categories             | Private Admin/Auth   |
-| Update Category         | PATCH  | /api/categories/:id         | Private Admin/Auth   |
-| Delete Category         | DELETE | /api/categories/:id         | Private Admin/Auth   |
+| Feature                 | Method |                  Url               |     Role & Access    |
+|-------------------------|--------|------------------------------------|----------------------|
+| Get All Categories      | GET    | baseUrl/api/categories             | Private Admin/Auth   |
+| Get Single Category     | GET    | baseUrl/api/categories/:id         | Private Admin/Auth   |
+| Create Category         | POST   | baseUrl/api/categories             | Private Admin/Auth   |
+| Update Category         | PATCH  | baseUrl/api/categories/:id         | Private Admin/Auth   |
+| Delete Category         | DELETE | baseUrl/api/categories/:id         | Private Admin/Auth   |
 
 <b>SubCategory</b>
 
-| Feature                 | Method | Route                          |     Role & Access    |
-|-------------------------|--------|--------------------------------|----------------------|
-| Get All SubCategories   | GET    | /api/subcategories             | Private Admin/Auth   |
-| Get Single SubCategory  | GET    | /api/subcategories/:id         | Private Admin/Auth   |
-| Create SubCategory      | POST   | /api/subcategories             | Private Admin/Auth   |
-| Update SubCategory      | PATCH  | /api/subcategories/:id         | Private Admin/Auth   |
-| Delete SubCategory      | DELETE | /api/subcategories/:id         | Private Admin/Auth   |
+| Feature                 | Method |                  Url               |     Role & Access    |
+|-------------------------|--------|------------------------------------|----------------------|
+| Get All SubCategories   | GET    | baseUrl/api/subcategories          | Private Admin/Auth   |
+| Get Single SubCategory  | GET    | baseUrl/api/subcategories/:id      | Private Admin/Auth   |
+| Create SubCategory      | POST   | baseUrl/api/subcategories          | Private Admin/Auth   |
+| Update SubCategory      | PATCH  | baseUrl/api/subcategories/:id      | Private Admin/Auth   |
+| Delete SubCategory      | DELETE | baseUrl/api/subcategories/:id      | Private Admin/Auth   |
 
 <b>Brand</b>
 
-| Feature                 | Method | Route                          |     Role & Access    |
-|-------------------------|--------|--------------------------------|----------------------|
-| Get All Brands          | GET    | /api/brands             | Private Admin/Auth   |
-| Get Single Brand        | GET    | /api/brands/:id         | Private Admin/Auth   |
-| Create Brands           | POST   | /api/brands             | Private Admin/Auth   |
-| Update Brands           | PATCH  | /api/brands/:id         | Private Admin/Auth   |
-| Delete Brands           | DELETE | /api/brands/:id         | Private Admin/Auth   |
+| Feature                 | Method |                  Url               |     Role & Access    |
+|-------------------------|--------|------------------------------------|----------------------|
+| Get All Brands          | GET    | baseUrl/api/brands                 | Private Admin/Auth   |
+| Get Single Brand        | GET    | baseUrl/api/brands/:id             | Private Admin/Auth   |
+| Create Brands           | POST   | baseUrl/api/brands                 | Private Admin/Auth   |
+| Update Brands           | PATCH  | baseUrl/api/brands/:id             | Private Admin/Auth   |
+| Delete Brands           | DELETE | baseUrl/api/brands/:id             | Private Admin/Auth   |
 
+<b>Product</b>
+
+| Feature                 | Method |                  Url               |     Role & Access    |
+|-------------------------|--------|------------------------------------|----------------------|
+| Get All Products        | GET    | baseUrl/api/products               | Public               |
+| Get Single Product      | GET    | baseUrl/api/products/:id           | Public               |
+| Create Product          | POST   | baseUrl/api/products               | Private User/Auth    |
+| Update Product          | PATCH  | baseUrl/api/products/:id           | Private User/Auth    |
+| Delete Product          | DELETE | baseUrl/api/products/:id           | Private User/Auth    |
+
+ 
