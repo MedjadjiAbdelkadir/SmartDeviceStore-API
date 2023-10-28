@@ -85,7 +85,7 @@ EMAIL_PASSWORD : sender email password
 <b>Authentication</b>
 
 | Feature          | Method | Route                       | Access       |
-|------------------|:------:|:---------------------------:|:-------------|
+|------------------|--------|-----------------------------|--------------|
 | Register         | POST   | /api/auth/register          | Public       |
 | Login            | POST   | /api/auth/login             | Public       |
 | Forgot Password  | POST   | /api/auth/forgotPassword    | Public       |
@@ -96,14 +96,14 @@ EMAIL_PASSWORD : sender email password
 <b>User</b>
 
 | Feature          | Method | Route                       |     Role & Access    |
-|------------------|:------:|:---------------------------:|:---------------------|
+|------------------|--------|-----------------------------|----------------------|
 | Profile          | GET    | /api/user/profile           | Private User/Auth    |
 | Update Profile   | PATCH  | /api/auth/profile           | Private User/Auth    |
 
 <b>Category</b>
 
 | Feature          | Method | Route                       |     Role & Access    |
-|------------------|:------:|:---------------------------:|:---------------------|
+|------------------|--------|-----------------------------|----------------------|
 | Get Categories   | GET    | /api/categories             | Private Admin/Auth   |
 | Get Category     | GET    | /api/categories/:id         | Private Admin/Auth   |
 | Create Category  | POST   | /api/categories             | Private Admin/Auth   |
@@ -113,7 +113,7 @@ EMAIL_PASSWORD : sender email password
 <b>SubCategory</b>
 
 | Feature             | Method | Route                          |     Role & Access    |
-|------------------   |:------:|:------------------------------:|:---------------------|
+|---------------------|--------|--------------------------------|----------------------|
 | Get SubCategories   | GET    | /api/subcategories             | Private Admin/Auth   |
 | Get SubCategory     | GET    | /api/subcategories/:id         | Private Admin/Auth   |
 | Create SubCategory  | POST   | /api/subcategories             | Private Admin/Auth   |
