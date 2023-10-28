@@ -27,7 +27,7 @@ Smart Device Store RESTful API clone.
 
 To run this project, you need to have Node.js and PostgreSQL installed on your system.
 
-1. Clone this repository: `git clone add your link repository`
+1. Clone this repository: `git clone https://github.com/MedjadjiAbdelkadir/SmartDeviceStore-API.git`
 2. Install the dependencies: `npm install`
 3. Open the PostgreSQL and execute the following command :
 ```Bash
@@ -35,7 +35,7 @@ $ CREATE DATABASE SmartDeviceStore;
 $ CREATE USER adminStore WITH ENCRYPTED PASSWORD 'password123456';
 $ GRANT ALL PRIVILEGES ON DATABASE SmartDeviceStore TO adminStore;
 ```
-4. Set up the environment variables on `.env` file:
+1. Set up the environment variables on `.env` file:
 
 ```env
 #APP_SETTINGS
