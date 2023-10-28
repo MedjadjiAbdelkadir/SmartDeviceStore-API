@@ -140,4 +140,24 @@ EMAIL_PASSWORD : sender email password
 | Update Product          | PATCH  | baseUrl/api/products/:id           | Private User/Auth    |
 | Delete Product          | DELETE | baseUrl/api/products/:id           | Private User/Auth    |
 
+------------------------------------------
+
+<b>Brand</b>
+
+| Feature                 | Method |                  Url               |     Role & Access    |
+|-------------------------|--------|------------------------------------|----------------------|
+| Get All Brands          | GET    | baseUrl/api/brands                 | Private Admin/Auth   |
+| Get Single Brand        | GET    | baseUrl/api/brands/:id             | Private Admin/Auth   |
+| Create Brands           | POST   | baseUrl/api/brands                 | Private Admin/Auth   |
+| Update Brands           | PATCH  | baseUrl/api/brands/:id             | Private Admin/Auth   |
+| Delete Brands           | DELETE | baseUrl/api/brands/:id             | Private Admin/Auth   |
+|-------------------------|--------|------------------------------------|----------------------|
+|                               Products                                                       |
+|-------------------------|--------|------------------------------------|----------------------|
+| Get All Products        | GET    | baseUrl/api/products               | Public               |
+| Get Single Product      | GET    | baseUrl/api/products/:id           | Public               |
+| Create Product          | POST   | baseUrl/api/products               | Private User/Auth    |
+| Update Product          | PATCH  | baseUrl/api/products/:id           | Private User/Auth    |
+| Delete Product          | DELETE | baseUrl/api/products/:id           | Private User/Auth    |
+
  
