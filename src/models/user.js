@@ -1,19 +1,23 @@
-const {DataTypes} = require('sequelize');
-const db = require('../config/database');
+const { DataTypes } = require('sequelize')
 
-const User = db.define('User', {
+const db = require('../database/config/database')
+
+const User = db.define("User", {
     id : {
         type : DataTypes.UUID,
+        allowNull : false,
+        primaryKey: true,
         defaultValue :DataTypes.UUIDV4,
-        primaryKey : true,
     },
     firstName : {
         type : DataTypes.STRING,
         allowNull :false,
+        field: 'first_name',
     },
     lastName : {
         type : DataTypes.STRING,
         allowNull :false,
+        field: 'last_name',
     },    
     email : {
         type : DataTypes.STRING,
@@ -37,33 +41,40 @@ const User = db.define('User', {
     },
     passwordChangedAt:{
         type : DataTypes.DATE,
+        field: 'password_changed_at',
     },
     passwordResetCode : {
         type : DataTypes.STRING,
+        field: 'password_reset_code',
     },
     passwordResetExpires : {
         type : DataTypes.DATE,
+        field: 'password_reset_expires',
     },
     passwordResetVerified :{
         type : DataTypes.BOOLEAN,
+        field: 'password_reset_verified',
     },
     profilePicture : {
         type : DataTypes.STRING,
         allowNull: false, 
+        field: 'profile_picture',
         defaultValue :'userProfile-default-image.jpeg',
         get() {
             return `${process.env.BASE_URL}/uploads/users/${this.getDataValue('profilePicture')}`
         },
     }
 
-}, {
-    tableName: 'users',
-    timestamps : true, 
-    paranoid: true,
-})
+},{
+    timestamps: true, 
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
 
-User.sync({alter : true})
-.then(() => console.log(`Create users Table...`)) 
-.catch(error => console.log(error.message));
+    paranoid: true, 
+    tableName:'users',
+    modelName: 'User',
+});
 
 module.exports = User;
+

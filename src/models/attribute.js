@@ -1,31 +1,32 @@
-const {DataTypes} = require('sequelize');
-const db = require('../config/database');
+const { DataTypes } = require('sequelize')
+
+const db = require('../database/config/database')
 
 const Attribute = db.define('Attribute', {
     id : {
         type : DataTypes.UUID,
+        allowNull : false,
+        primaryKey: true,
         defaultValue :DataTypes.UUIDV4,
-        primaryKey : true,
     },
-    name : {
+    name: {
         type : DataTypes.STRING,
-        allowNull :false,
-        unique: true,
-        validate: {
-            notNull : true,
-        }
+        allowNull : false,
     },
-    slug :{
+    slug: {
         type : DataTypes.STRING,
     },
-}, {
-    tableName: 'attributes',
-    timestamps : true, 
-    paranoid: true,
-})
+},{
+    timestamps: true, 
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
 
-Attribute.sync({alter : true})
-.then(() => console.log(`Create attributes Table...`)) 
-.catch(error => console.log(error.message));
+    paranoid: true, 
+    tableName:'attributes',
+    modelName: 'Attribute',
+});
 
-module.exports = Attribute;
+module.exports = Attribute
+
+

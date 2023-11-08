@@ -1,9 +1,9 @@
-const sharp = require('sharp');
-const asyncHandler = require('express-async-handler');
+const sharp = require('sharp')
+const asyncHandler = require('express-async-handler')
 const { v4: uuidv4 } = require('uuid')
 
 const ApiError = require('../utils/apiError')
-const statusCodes = require('../utils/statusCodes');
+const statusCodes = require('../utils/statusCodes')
 
 exports.resizeBrandImage =  asyncHandler(async (req, res, next) => {
     if(req.file && req.file.buffer){

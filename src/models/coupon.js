@@ -1,21 +1,25 @@
-const {DataTypes} = require('sequelize');
-const db = require('../config/database');
+const { DataTypes } = require('sequelize')
+
+const db = require('../database/config/database')
+
 
 const Coupon = db.define('Coupon', {
     id : {
         type : DataTypes.UUID,
+        allowNull : false,
+        primaryKey: true,
         defaultValue :DataTypes.UUIDV4,
-        primaryKey : true,
     },
     type : {
         type : DataTypes.ENUM,
         values : ['store','first_time_shopper','free_shipping','category', 'subcategory', 'product', 'brand','seasonal', 'special_occasion'],
         allowNull :false,
-        defaultValue : 'product'
+        defaultValue : 'store'
     },
     targetId : {
-        type : DataTypes.UUID,
-        allowNull :false
+        type: DataTypes.UUID,
+        allowNull: true,
+        field: 'target_id',     
     },
     code : {
         type : DataTypes.STRING,
@@ -28,11 +32,13 @@ const Coupon = db.define('Coupon', {
     },
     startAt: {
         type: DataTypes.DATE,
-        allowNull: false,        
+        allowNull: false, 
+        field: 'start_at',       
     },
     expiresAt: {
         type: DataTypes.DATE,
-        allowNull: false,        
+        allowNull: false, 
+        field: 'expires_at',       
     },
     display : {
         type: DataTypes.BOOLEAN,
@@ -40,16 +46,18 @@ const Coupon = db.define('Coupon', {
     },
     createdBy : {
         type : DataTypes.UUID,
-        allowNull :false
+        allowNull :false,
+        field: 'created_by',
     },
-}, {
-    tableName: 'coupons',
-    timestamps : true, 
-    paranoid: true,
-})
+},{
+    timestamps: true, 
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
 
-Coupon.sync()
-.then(() => {console.log(`Create coupons Table...`)}) 
-.catch(error => console.error(error.message));
+    paranoid: true, 
+    tableName:'coupons',
+    modelName: 'Coupon',
+});
 
-module.exports = Coupon;
+module.exports = Coupon

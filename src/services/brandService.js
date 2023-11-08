@@ -4,7 +4,7 @@ exports.getBrands = async () => {
     try {
         return await Brand.findAll({
             order: [
-                ['createdAt', 'ASC'],
+                ['created_at', 'ASC'],
             ],
         })
     } catch (error) {

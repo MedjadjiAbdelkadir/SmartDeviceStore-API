@@ -1,44 +1,34 @@
-const {DataTypes} = require('sequelize');
-const db = require('../config/database');
+const { DataTypes } = require('sequelize')
 
-const Category = db.define('category', {
+const db = require('../database/config/database')
+
+
+const Category = db.define("Category", {
     id : {
         type : DataTypes.UUID,
+        allowNull : false,
+        primaryKey: true,
         defaultValue :DataTypes.UUIDV4,
-        primaryKey : true,
     },
-    name : {
+    name: {
         type : DataTypes.STRING,
-        allowNull :false,
-        unique: true,
-        validate: {
-            notNull : true,
-            min:5,
-            max:6,
-        }
+        allowNull : false,
     },
-    slug :{
+    slug: {
         type : DataTypes.STRING,
+        allowNull : false,
     },
-    // image : {
-    //     type : DataTypes.STRING,
-    //     allowNull: false, 
-    //     defaultValue :'category-default-image.jpeg',
+},{
+    timestamps: true, 
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
 
-    //     get() {
-    //         return `${process.env.BASE_URL}/uploads/categories/${this.getDataValue('image')}`
-    //     },
-    // }
-}, {
+    paranoid: true, 
+    tableName:'categories',
+    modelName: 'Category',
+});
 
-    tableName: 'categories',
-    modelName : 'Category',
-    timestamps : true, 
-    paranoid: true,
-})
+module.exports = Category
 
-Category.sync({alter: true})
-.then(() => console.log(`Create categories Table...`)) 
-.catch(error => console.error(error.message));
 
-module.exports = Category;

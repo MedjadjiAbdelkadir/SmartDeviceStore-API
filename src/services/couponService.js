@@ -22,9 +22,20 @@ exports.getCoupon = async ({id}) =>{
 
 exports.createCoupon = async (data) =>{
     try {
-        const {type, targetId, code, discount, expiresAt} = data
+        let {targetId} = data
+        const {type, code, discount, startAt, expiresAt, createdBy} = data
+        if(targetId ===''){
+            targetId = null;
+        }
+
         return await Coupon.create({
-            type, targetId, code, discount, expiresAt
+            type,
+            targetId:targetId, 
+            code, 
+            discount, 
+            startAt, 
+            expiresAt,
+            createdBy
         })
     } catch (error) {
         throw error;
@@ -33,7 +44,7 @@ exports.createCoupon = async (data) =>{
 
 exports.updateCoupon = async (data) =>{
     try {
-        const {id, type, targetId, code, discount, expiresAt} = data
+        const {id, code, discount, startAt, expiresAt} = data
         const coupon = await Coupon.findByPk(id)
         if(!coupon){
             const error = new Error()
@@ -41,7 +52,7 @@ exports.updateCoupon = async (data) =>{
             error.status = 404
             throw error
         }
-        return await Coupon.update({type, targetId, code, discount, expiresAt})
+        return await Coupon.update({code, discount, startAt, expiresAt})
     } catch (error) {
         throw error;
     }

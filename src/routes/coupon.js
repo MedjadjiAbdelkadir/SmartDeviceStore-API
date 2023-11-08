@@ -4,7 +4,7 @@ const {
 } = require('../utils/validators/couponValidator')
 
 const { 
-    getCoupons, getCoupon ,createCoupon, updateCoupon, deleteCoupon
+    getCoupons, getCoupon ,setAdminIdToBody,createCoupon, updateCoupon, deleteCoupon
 } = require('../controllers/couponController')
 
 const { auth } = require('../middlewares/authenticateMiddleware')
@@ -17,13 +17,13 @@ router.get('/',getCoupons)
 router.get('/:id', getCouponValidator ,  getCoupon)
 
 // router.use()
-router.post('/',createCouponValidator,
+router.post('/',createCouponValidator,setAdminIdToBody,
 (req,res,next)=>{
     // const {userId, productId , content , ratings} = req.body
     // console.log("Middleware Auth :", req.user.dataValues);  
     // console.log("Req Body :", req.body.userId);  
     console.log("Req Body targetId :", req.body);  
-    // next()
+    next()
 },createCoupon)
 router.patch('/:id', updateCouponValidator, updateCoupon)
 router.delete('/:id',deleteCouponValidator, deleteCoupon)

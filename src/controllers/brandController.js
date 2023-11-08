@@ -16,7 +16,9 @@ exports.getBrands = async (req, res) =>{
         }
         return sendErrorResponse(res , 'No Brands' , statusCodes.NOT_FOUND) 
     } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
+        return sendErrorResponse(res , error.message, statusCodes.INTERNAL_SERVER_ERROR)
+
+        // return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
     }
 }
 

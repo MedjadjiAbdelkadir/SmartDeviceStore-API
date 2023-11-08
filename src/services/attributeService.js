@@ -1,12 +1,13 @@
-const Attribute = require('../models/attribute')
+const Attribute = require("../models/attribute");
 
 exports.getAttributes = async () => {
     try {
         return await Attribute.findAll({
             order: [
-                ['createdAt', 'ASC'],
+                ['created_at', 'ASC']
             ],
         })
+        
     } catch (error) {
         throw error;
     }

@@ -1,39 +1,37 @@
-const {DataTypes} = require('sequelize');
-const db = require('../config/database');
+const { DataTypes } = require('sequelize')
+
+const db = require('../database/config/database')
 
 const ProductAttribute = db.define('ProductAttribute', {
     id : {
         type : DataTypes.UUID,
+        allowNull : false,
+        primaryKey: true,
         defaultValue :DataTypes.UUIDV4,
-        primaryKey : true,
     },
-    ProductId : {
+    productId : {
+        allowNull: false,
+        type: DataTypes.UUID,
+        field: 'product_id',  
+    },
+    attributeId : {
         type : DataTypes.UUID,
-        allowNull :false,
-        unique :false,
+        allowNull :true,
+        field: 'attribute_id',
     },
-    AttributeId : {
-        type : DataTypes.UUID,
-        allowNull :false,
-        unique :false,
+    value: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
-    value : {
-        type : DataTypes.STRING,
-        allowNull :false,
-        unique :false,
-        validate: {
-            notNull : true,
-        }
-    },
+},{
+    timestamps: true, 
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
 
-}, {
-    tableName: 'products_attributes',
-    timestamps : true, 
-    paranoid: true,
-})
+    paranoid: true, 
+    tableName:'products_attributes',
+    modelName: 'ProductAttribute',
+});
 
-ProductAttribute.sync({alter : true})
-.then(() => console.log(`Create products_attributes Table...`)) 
-.catch(error => console.log(error.message));
-
-module.exports = ProductAttribute;
+module.exports = ProductAttribute

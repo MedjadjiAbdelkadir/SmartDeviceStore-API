@@ -4,7 +4,7 @@ exports.getUsers = async () => {
     try {
         return await User.findAll({
             order: [
-                ['createdAt', 'ASC'],
+                ['created_at', 'ASC'],
             ],
         })
     } catch (error) {

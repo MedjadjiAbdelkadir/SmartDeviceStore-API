@@ -4,7 +4,7 @@ exports.getCategories = async () =>{
     try {
         return await Category.findAll({
             order: [
-                ['createdAt', 'ASC']
+                ['created_at', 'ASC']
             ],
         })
     } catch (error) {

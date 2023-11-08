@@ -46,12 +46,20 @@ exports.getCoupon = async (req, res) =>{
     @access  Private|Admin & Manager
 */
 
+exports.setAdminIdToBody = (req, res, next) => {
+    req.body.createdBy = req.user.id.toString()
+    next()
+};
+
+
 exports.createCoupon =async (req, res , next)=>{
     try {
-        const coupon = await  createCoupon(req.body)
+       const coupon = await  createCoupon(req.body)
         return sendSuccessResponse(res , 'Coupon created successfully' , {coupon} , statusCodes.CREATED) 
     } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
+        return sendErrorResponse(res , error.message, statusCodes.INTERNAL_SERVER_ERROR)
+
+        // return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
     }
 }
 

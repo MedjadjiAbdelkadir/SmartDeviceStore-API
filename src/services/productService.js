@@ -1,14 +1,12 @@
 const Product = require('../models/product');
 const ProductAttribute = require('../models/productAttribute');
 const Attribute = require('../models/attribute');
-const Brand = require('../models/brand');
-const SubCategory = require('../models/subCategory');
 
 exports.getProducts = async () => {
     try {
         return await Product.findAll({
             order: [
-                ['createdAt', 'ASC'],
+                ['created_at', 'ASC'],
             ],
         })
     } catch (error) {

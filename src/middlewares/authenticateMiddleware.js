@@ -1,8 +1,8 @@
-const ApiError = require('../utils/apiError');
-const {statusCodes} = require('../utils/statusCodes');
-const {verifyToken} = require('../utils/tokenUtils'); 
+const ApiError = require('../utils/apiError')
+const {statusCodes} = require('../utils/statusCodes')
+const {verifyToken} = require('../utils/tokenUtils') 
 
-const User = require('../models/user');
+const User = require('../models/user')
 
 // @desc   make sure the user is logged in
 exports.auth = async (req, res, next) =>{

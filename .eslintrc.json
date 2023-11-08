@@ -14,7 +14,7 @@
       "no-underscore-dangle": "off",
       "class-methods-use-this": "off",
       "no-undef": "error",
-      // "eqeqeq": ["error", "allow-null"],
+      "eqeqeq": ["error", "allow-null"],
       "no-useless-catch" : "off",
       "node/no-unsupported-features/es-syntax": "off",
       "prefer-destructuring": ["warn", { "object": true, "array": false }],

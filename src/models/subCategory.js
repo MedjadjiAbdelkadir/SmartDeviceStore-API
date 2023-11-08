@@ -1,44 +1,45 @@
-const {DataTypes} = require('sequelize');
-const db = require('../config/database');
+const { DataTypes } = require('sequelize')
 
-const SubCategory = db.define('SubCategory', {
+const db = require('../database/config/database')
+
+const SubCategory = db.define("SubCategory", {
     id : {
         type : DataTypes.UUID,
+        allowNull : false,
+        primaryKey: true,
         defaultValue :DataTypes.UUIDV4,
-        primaryKey : true,
     },
-    categoryId : {
+    name: {
+        type : DataTypes.STRING,
+        allowNull : false,
+    },
+    slug: {
+        type : DataTypes.STRING,
+        allowNull : false,
+    },
+    categoryId:{ 
         type : DataTypes.UUID,
-        allowNull :false
+        field: 'category_id',
     },
-    name : {
-        type : DataTypes.STRING,
-        allowNull :false,
-        unique: true,
-        validate :{
-            min:5,
-            max:50,
-        }
-    },
-    slug :{
-        type : DataTypes.STRING,
-    },
+
     image : {
         type : DataTypes.STRING,
-        allowNull: false, 
         defaultValue :'sub-category-default-image.jpeg',
         get() {
             return `${process.env.BASE_URL}/uploads/subcategories/${this.getDataValue('image')}`
         },
     }
-}, {
-    tableName: 'subcategories',
-    timestamps : true, 
-    paranoid: true,
-})
+},{
+    timestamps: true, 
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
 
-SubCategory.sync()
-.then(() => {console.log(`Create subcategories Table...`)}) 
-.catch(error => console.error(error.message));
+    paranoid: true, 
+    tableName:'subcategories',
+    modelName: 'SubCategory',
+});
 
-module.exports = SubCategory;
+module.exports = SubCategory
+
+

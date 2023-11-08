@@ -1,31 +1,31 @@
-const {DataTypes} = require('sequelize');
-const db = require('../config/database');
+const { DataTypes } = require('sequelize')
+
+const db = require('../database/config/database')
 
 const Product = db.define('Product', {
     id : {
         type : DataTypes.UUID,
+        allowNull : false,
+        primaryKey: true,
         defaultValue :DataTypes.UUIDV4,
-        primaryKey : true,
     },
     subCategoryId : {
-        type : DataTypes.UUID,
-        allowNull :false,
+        allowNull: false,
+        type: DataTypes.UUID,
+        field: 'sub_category_id',
     },
     brandId : {
         type : DataTypes.UUID,
-        allowNull :true
+        allowNull :true,
+        field: 'brand_id',
     },
-    name : {
-        type : DataTypes.STRING,
-        allowNull :false,
-        validate: {
-            notNull : true,
-            min:5,
-            max:6,
-        }
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
-    slug :{
-        type : DataTypes.STRING,
+    slug: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     description : {
         type : DataTypes.TEXT,
@@ -43,34 +43,37 @@ const Product = db.define('Product', {
     priceAfterDiscount : {
         type : DataTypes.INTEGER,
         allowNull :false,
+        field: 'price_after_discount',
     },
     averageRating : {
         type : DataTypes.DECIMAL,
+        field: 'average_rating',
         // defaultValue : 0;
-    }
-    // imageCover : {
-    //     type : DataTypes.STRING,
-    //     allowNull: false, 
-    //     get() {
-    //         return `${process.env.BASE_URL}/uploads/products/${this.getDataValue('image')}`
-    //     },
-    // },
-    // images : {
-    //     // type : DataTypes.JSON,
-    //     type: DataTypes.ARRAY(DataTypes.STRING),
-    //     get() {
-    //         const images = this.getDataValue('images');
-    //         return images.map(img => `${process.env.BASE_URL}/uploads/products/${img}`);
-    //     },
-    // },
-}, {
-    tableName: 'products',
-    timestamps : true, 
-    paranoid: true,
-})
+    },
+    imageCover : {
+        type : DataTypes.STRING,
+        allowNull: false, 
+        field: 'image_cover',
+        get() {
+            return `${process.env.BASE_URL}/uploads/products/${this.getDataValue('image')}`
+        },
+    },
+    images : {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        get() {
+            const images = this.getDataValue('images');
+            return images.map(img => `${process.env.BASE_URL}/uploads/products/${img}`);
+        },
+    },
+},{
+    timestamps: true, 
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
 
-Product.sync({alter : true})
-.then(() => console.log(`Create products Table...`)) 
-.catch(error => console.log(error.message));
+    paranoid: true, 
+    tableName:'products',
+    modelName: 'Product',
+});
 
-module.exports = Product;
+module.exports = Product

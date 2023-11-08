@@ -1,5 +1,5 @@
-const routeNotFoundMiddleware = require('./routeNotFoundMiddleware');
-const errorHandlerMiddleware = require('./errorHandlerMiddleware');
+const routeNotFoundMiddleware = require('./routeNotFoundMiddleware')
+const errorHandlerMiddleware = require('./errorHandlerMiddleware')
 
 const middlewares = function(app) {
     app.all('*' , routeNotFoundMiddleware)

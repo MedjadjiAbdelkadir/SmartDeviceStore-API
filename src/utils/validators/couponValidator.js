@@ -1,12 +1,11 @@
-const { check, body } = require('express-validator');
+const { check, body } = require('express-validator')
 
-const validatorMiddleware= require('../../middlewares/validatorMiddleware');
+const validatorMiddleware= require('../../middlewares/validatorMiddleware')
 
-const Brand = require('../../models/brand');
-const Product = require('../../models/product');
-const Category = require('../../models/category');
-const SubCategory = require('../../models/subCategory');
-const User = require('../../models/user');
+const Brand = require('../../models/brand')
+const Product = require('../../models/product')
+const Category = require('../../models/category')
+const SubCategory = require('../../models/subCategory')
 
 exports.getCouponValidator = [
     check('id')
@@ -96,14 +95,6 @@ exports.createCouponValidator = [
         }        
 
     }),
-
-
-
-
-
-
-
-
 
     validatorMiddleware,
 ];

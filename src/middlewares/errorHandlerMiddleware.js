@@ -1,5 +1,5 @@
-const ApiError = require("../utils/apiError");
-const { statusCodes } = require("../utils/statusCodes");
+const ApiError = require("../utils/apiError")
+const { statusCodes } = require("../utils/statusCodes")
 
 const handleJwtInvalidSignature = () =>
   new ApiError('Invalid token, please login again..', statusCodes.UNAUTHORIZED);

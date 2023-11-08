@@ -1,5 +1,5 @@
-const ApiError = require('../utils/apiError');
-const {statusCodes} = require('../utils/statusCodes');
+const ApiError = require('../utils/apiError')
+const {statusCodes} = require('../utils/statusCodes')
 
 // @desc    Authorization (User Permissions)
 exports.allowedTo = (...roles) => async (req,res, next)=>{

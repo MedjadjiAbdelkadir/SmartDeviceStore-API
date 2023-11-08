@@ -15,15 +15,8 @@ app.use('/uploads', express.static(path.join(__dirname,'uploads')))
 
 const routes = require('./routes/index');
 const middlewares = require('./middlewares/middlewares');
-const db = require('./config/database');
 
-db.authenticate()
-.then((res) => console.log('Database Connected') )
-.catch(err => console.log(`Error Connecting${ err.message}`))
-
-require('./models/_index')
-// const SubCategory = require('./models/subCategory'); // Adjust the path to your model file
-// const Category = require('./models/category');
+const db = require('./database/config/index');
 
 // Routes
 app.use('/api', routes)
