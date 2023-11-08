@@ -1,17 +1,20 @@
-const Category = require("../../models/category");
-const SubCategory = require("../../models/subCategory");
+const Category = require("../../models/category")
+const SubCategory = require("../../models/subCategory")
 
 /* -------------------- Beginning of Hooks -------------------- */
+
 Category.addHook('beforeFind', (options) => {
     options.attributes = {
-        exclude: ['createdAt','updatedAt','deletedAt'], 
+        exclude: ['created_at','updated_at','deleted_at'],
     }
     options.include = [
-        {
-            model: SubCategory,
-            as: 'subcategory', 
-            attributes: ['name'], 
-        },
+        { 
+            model: SubCategory, 
+            as: 'subcategories' ,
+            attributes: ['id','name', 'slug','image'], 
+        }
+
     ]
 });
+
 /* -------------------- End of Hooks -------------------- */

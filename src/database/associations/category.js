@@ -1,17 +1,23 @@
-const Category = require("../../models/category");
-const SubCategory = require("../../models/subCategory");
-
 /*
     Beginning of relationships between tables
     table :  categories && model : Category
 */
 
-Category.hasMany(SubCategory , {
-    as :'subcategory',
+const Category = require("../../models/category")
+const Coupon = require("../../models/coupon")
+const SubCategory = require("../../models/subCategory")
+
+Category.hasMany(SubCategory, {
+    as: 'subcategories',
+    foreignKey: 'category_id',
+    onDelete: 'CASCADE' , onUpdate: 'CASCADE'
+});
+
+Category.hasMany(Coupon , {
+    as :'coupons',
     foreignKey:{
-        name : 'categoryId',
+        name : 'target_id',
     },
     onDelete: 'CASCADE' , onUpdate: 'CASCADE'
 })
-
 /* ---- End of relationships between tables ---- */

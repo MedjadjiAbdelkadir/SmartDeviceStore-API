@@ -1,31 +1,25 @@
-const Attribute = require("../../models/attribute");
-const Brand = require("../../models/brand");
-const Product = require("../../models/product");
-const Review = require("../../models/review");
-const SubCategory = require("../../models/subCategory");
-const User = require("../../models/user");
+const Product = require("../../models/product")
+const Attribute = require("../../models/attribute")
+const Brand = require("../../models/brand")
+const SubCategory = require("../../models/subCategory")
+
 
 /* -------------------- Beginning of Hooks -------------------- */
 
-
 Product.addHook('beforeFind', (options) => {
     options.attributes = {
-        exclude: ['subCategoryId','brandId','createdAt','updatedAt','deletedAt'], 
-        // attributes : ['id' ,'name', 'slug', 'description', 'quantity', 'price', 'priceAfterDiscount'] ,
-
+        exclude: ['sub_category_id','brand_id','created_at','updated_at','deleted_at'], 
     }
     options.include = [
         {
             model: Brand,
             as: 'brand', 
-            attributes: ['name', 'image'], 
-        },
-        {
+            attributes: ['name', 'image'],  
+        },{
             model: SubCategory,
             as: 'subcategory',  
             attributes: ['name'], 
-        },
-        {
+        },{
             model:Attribute, 
             as : 'features',
             attributes: ['id','name'], 
@@ -33,21 +27,11 @@ Product.addHook('beforeFind', (options) => {
                 as: 'values',
                 attributes: ['value'],
             }
-        },
-        {
-            model: Review,
-            as: 'reviews', 
-            attributes: ['id','userId','content','ratings'], 
-            // include: 
-            include: {
-                model: User,
-                as : 'users',
-                attributes : ['id','firstName','lastName','profilePicture']
-            },
-        },
+            // model: Attribute,
+            // as : 'features',
+            // through: { attributes: ['value'] },
+        }
     ]
-})
 
-
-
+});
 /* -------------------- End of Hooks -------------------- */

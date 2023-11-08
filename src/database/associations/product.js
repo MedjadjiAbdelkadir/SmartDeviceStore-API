@@ -1,39 +1,43 @@
-const Product = require("../../models/product");
-const Review = require("../../models/review");
-
-const Attribute = require("../../models/attribute");
-
-const Brand = require("../../models/brand");
-
-const ProductAttribute = require("../../models/productAttribute");
-
-const SubCategory = require("../../models/subCategory");
-
 /*
     Beginning of relationships between tables
     table :  products && model : Product
 */
 
-Product.hasMany(Review , { as :'reviews',
+const Product = require("../../models/product")
+const Attribute = require("../../models/attribute")
+const Brand = require("../../models/brand")
+const ProductAttribute = require("../../models/productAttribute")
+const SubCategory = require("../../models/subCategory")
+
+Product.belongsTo(Brand , {
+    as :'brand',
     foreignKey:{
-        name : 'productId',
+        name : 'brand_id',
     },
+    onDelete: 'CASCADE' , onUpdate: 'CASCADE'
 })
 
 Product.belongsTo(SubCategory , {
     as : 'subcategory',
     foreignKey:{
-        name : 'subCategoryId',
+        name : 'sub_category_id',
     },
+    onDelete: 'CASCADE' , onUpdate: 'CASCADE'
 })
 
-Product.belongsTo(Brand , {
-    as :'brand',
+Product.belongsToMany(Attribute, { 
+    through: ProductAttribute,
     foreignKey:{
-        name : 'brandId',
+        name : 'attribute_id',
     },
-})
+    as: 'features' 
+});
 
-Product.belongsToMany(Attribute, { through: ProductAttribute,as: 'features' });
-Product.belongsToMany(ProductAttribute, {through: ProductAttribute,as: 'values' });
+// Product.belongsToMany(Attribute, { 
+//     through: ProductAttribute,
+//     as: 'features',
+//     foreignKey : 'attributeId' ,
+//     onDelete: 'CASCADE' , onUpdate: 'CASCADE' 
+// });
+
 /* ---- End of relationships between tables ---- */
