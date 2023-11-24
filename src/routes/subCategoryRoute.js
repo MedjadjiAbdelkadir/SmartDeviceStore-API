@@ -5,14 +5,16 @@ const { uploadSingleImageMiddleware } = require('../middleware/uploadImageMiddle
 const { getSubCategories, getSubCategory, updateSubCategory, deleteSubCategory, createSubCategory, allTrashSubCategories, restoreSubCategory, forceDeleteSubCategory, resizeCreateSubCategoryImage, resizeUpdateSubCategoryImage } = require('../controllers/subCategoryController')
 const { getSubCategoryValidator, createSubCategoryValidator, updateSubCategoryValidator, deleteSubCategoryValidator, restoreSubCategoryValidator, forceDeleteSubCategoryValidator } = require('../utils/validators/subCategoryValidator')
 const { allowedTo } = require('../middleware/permissionsMiddleware')
+const { auth } = require('../middleware/authMiddleware')
 
 const UploadSubCategoryImage = uploadSingleImageMiddleware('image')
 
 const router = express.Router()
 
 router.get('/' , getSubCategories)
-router.get('/trash',allowedTo('admin'), allTrashSubCategories)
+router.get('/trash',auth, allowedTo('admin'), allTrashSubCategories)
 router.get('/:id' ,getSubCategoryValidator, getSubCategory)
+router.use(auth)
 router.use(allowedTo('admin'))
 router.post('/',UploadSubCategoryImage,resizeCreateSubCategoryImage,createSubCategoryValidator, createSubCategory)
 router.patch('/:id', UploadSubCategoryImage,resizeUpdateSubCategoryImage, updateSubCategoryValidator ,updateSubCategory)

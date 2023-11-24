@@ -3,13 +3,15 @@ const express = require('express')
 const { getAttributes, getAttribute, updateAttribute, deleteAttribute, createAttribute, allTrashAttributes, restoreAttribute, forceDeleteAttribute } = require('../controllers/attributeController')
 const { getAttributeValidator, createAttributeValidator, updateAttributeValidator, deleteAttributeValidator, restoreAttributeValidator, forceDeleteAttributeValidator } = require('../utils/validators/attributeValidator')
 const { allowedTo } = require('../middleware/permissionsMiddleware')
+const { auth } = require('../middleware/authMiddleware')
 
 
 const router = express.Router()
 
 router.get('/' , getAttributes)
-router.get('/trash',allowedTo('admin'), allTrashAttributes)
+router.get('/trash',auth ,allowedTo('admin'), allTrashAttributes)
 router.get('/:id' ,getAttributeValidator, getAttribute)
+router.use(auth)
 router.use(allowedTo('admin'))
 router.post('/',createAttributeValidator, createAttribute)
 router.patch('/:id',  updateAttributeValidator ,updateAttribute)

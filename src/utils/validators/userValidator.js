@@ -1,16 +1,16 @@
-const { check, body } = require('express-validator');
-const slugify = require('slugify');
-const validatorMiddleware = require('../../middleware/validatorMiddleware');
-const User = require('../../models/user');
+const { check, body } = require('express-validator')
+const validatorMiddleware = require('../../middleware/validatorMiddleware')
+
+const User = require('../../models/user')
 
 exports.getProfileValidator = [
-    check('id').notEmpty().withMessage('User id is Required'),
+    check('userId').notEmpty().withMessage('User id is Required'),
     // .isUUID().withMessage('Attribute id is Invalid'),
     validatorMiddleware,
 ];
 
 exports.updateProfileValidator = [
-    check('id')
+    check('userId')
         .notEmpty().withMessage('User id is Required'),
         // .isUUID().withMessage('Attribute id is Invalid'),
         
@@ -33,7 +33,7 @@ exports.updateProfileValidator = [
         .isMobilePhone('ar-DZ').withMessage('Invalid phone number')
         .trim()
         .custom(async (value, {req}) => {
-            await User.findOne({
+            User.findOne({
                 where : { 
                     phone: value, 
                     id : !req.user.id.toString()
@@ -51,7 +51,7 @@ exports.updateProfileValidator = [
 ];
 
 exports.updateProfileAvatarValidator = [
-    check('id')
+    check('userId')
         .notEmpty().withMessage('User id is Required'),
         // .isUUID().withMessage('Attribute id is Invalid'),
         
@@ -63,13 +63,13 @@ exports.updateProfileAvatarValidator = [
 ];
 
 exports.deleteAccountValidator = [
-    check('id').notEmpty().withMessage('Profile id is Required'),
+    check('userId').notEmpty().withMessage('Profile id is Required'),
     // Rules for validations 
     validatorMiddleware,
 ];
 
 exports.restoreAccountValidator = [
-    check('id').notEmpty().withMessage('Profile id is Required'),
+    check('userId').notEmpty().withMessage('Profile id is Required'),
     // Rules for validations 
     validatorMiddleware,
 ];

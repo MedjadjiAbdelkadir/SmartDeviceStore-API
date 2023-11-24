@@ -17,7 +17,7 @@ process.on('UncaughtException', (err)=>{
 const corsOptions = {
     origin: "http://localhost:8081"
 }
-// app.use(express.json())
+app.use(express.json())
 app.use(cors(corsOptions))
 
 const routes = require('./routes')

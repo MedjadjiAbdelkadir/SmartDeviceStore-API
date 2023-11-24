@@ -9,15 +9,25 @@ const { StatusCodes } = require("../utils/status")
 const userService = require("../services/userService")
 
 /*
+    @desc    Set userId to req.body.userId
+    @access  Private | User
+*/
+exports.setUserIdToBody = asyncHandler( async (req, res, next)=>{
+    if(!req.body.userId){
+        req.body.userId = req.user.id.toString()
+    }
+    next()
+})
+
+/*
     @desc    Get Profile
     @route   GET baseURL/api/v1/profile
     @access  PRIVATE | User
 */
 exports.getProfile = asyncHandler( async (req, res, next)=>{
-    const profile = await  userService.getProfile(req.user.id)
+    const profile = await  userService.getProfile(req.body.userId)
     return sendResponse(res, 'success', {profile} , StatusCodes.OK)
 })
-
 
 /*
     @desc    Update Profile 
@@ -25,9 +35,8 @@ exports.getProfile = asyncHandler( async (req, res, next)=>{
     @access  PRIVATE | User
 */
 exports.updateProfile = asyncHandler( async (req, res, next)=>{
-    const {id} = req.user.id
-    const {firstName, lastName, phone} = req.body
-    const profile = await  userService.updateProfile(id,firstName, lastName, phone)
+    const {userId, firstName, lastName, phone} = req.body
+    const profile = await  userService.updateProfile(userId,firstName, lastName, phone)
     return sendResponse(res, 'Profile updated successfully', {profile} , StatusCodes.OK)
 })
 
@@ -38,9 +47,8 @@ exports.updateProfile = asyncHandler( async (req, res, next)=>{
     @access  PRIVATE | User
 */
 exports.updateAvatarProfile = asyncHandler( async (req, res, next)=>{
-    const {id} = req.user.id
-    const {image} = req.body
-    const profile = await  userService.updateAvatarProfile(id,image)
+    const {userId, image} = req.body
+    const profile = await  userService.updateAvatarProfile(userId,image)
     return sendResponse(res, 'Avatar Profile updated successfully', {profile} , StatusCodes.OK)
 })
 
@@ -50,8 +58,7 @@ exports.updateAvatarProfile = asyncHandler( async (req, res, next)=>{
     @access  PRIVATE | User
 */
 exports.deleteAccount = asyncHandler( async (req, res, next)=>{
-    const {id} = req.user.id
-    await  userService.deleteAccount(id)
+    await  userService.deleteAccount(req.user.userId)
     return sendResponse(res, 'Profile Account deleted successfully', null, StatusCodes.NO_CONTENT)
 })
 
@@ -61,7 +68,7 @@ exports.deleteAccount = asyncHandler( async (req, res, next)=>{
     @access  PRIVATE | User
 */
 exports.restoreAccount = asyncHandler( async (req, res, next)=>{
-    const profile = await  userService.restoreAccount(req.params.id)
+    const profile = await  userService.restoreAccount(req.user.userId)
     return sendResponse(res, 'Restore Profile Account successfully', {profile}, StatusCodes.OK)
 })
 

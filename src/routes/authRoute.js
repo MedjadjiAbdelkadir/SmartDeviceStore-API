@@ -5,8 +5,8 @@ const { loginValidator, registerValidator, forgotPasswordValidator, verifyResetC
 
 const router = express.Router()
 
-router.post('/register',registerValidator , register)
-router.post('/login', loginValidator, login)
+router.post('/register', registerValidator, register)
+router.post('/login',  loginValidator, login)
 
 router.post('/forgotPassword',forgotPasswordValidator, forgotPassword)
 router.post('/verifyResetCode',verifyResetCodeValidator, verifyResetCode)

@@ -4,14 +4,16 @@ const { getBrands, getBrand, updateBrand, deleteBrand, createBrand, resizeCreate
 const { getBrandValidator, createBrandValidator, updateBrandValidator, deleteBrandValidator, restoreBrandValidator, forceDeleteBrandValidator } = require('../utils/validators/brandValidator')
 const { uploadSingleImageMiddleware } = require('../middleware/uploadImageMiddleware')
 const { allowedTo } = require('../middleware/permissionsMiddleware')
+const { auth } = require('../middleware/authMiddleware')
 
 const UploadBrandImage = uploadSingleImageMiddleware('image')
 
 const router = express.Router()
 
 router.get('/' , getBrands)
-router.get('/trash',allowedTo('admin'), allTrashBrands)
+router.get('/trash',auth, allowedTo('admin'), allTrashBrands)
 router.get('/:id' ,getBrandValidator, getBrand)
+router.use(auth)
 router.use(allowedTo('admin'))
 router.post('/',UploadBrandImage, resizeCreateBrandImage,createBrandValidator, createBrand)
 router.patch('/:id', UploadBrandImage, resizeUpdateBrandImage, updateBrandValidator ,updateBrand)

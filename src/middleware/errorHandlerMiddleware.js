@@ -13,7 +13,7 @@ const handleJwtExpired = () =>
 */
 const handleError = (res, error) =>{
     res.status(error.statusCode || 500).json({
-        'code': error.statusCode,
+        'code': error.statusCode || 500,
         'status' : error.status || StatusCodes.INTERNAL_SERVER_ERROR,
         'message': error.message || StatusMessages.INTERNAL_SERVER_ERROR ,
     })

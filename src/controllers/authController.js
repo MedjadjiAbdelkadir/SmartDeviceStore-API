@@ -22,7 +22,7 @@ exports.register = asyncHandler( async (req, res, next) =>{
 exports.login = asyncHandler( async (req, res, next) =>{
     const {email ,password} = req.body
     const {user , token} = await authService.login(email ,password)  
-    return sendResponse(res, 'Login successfully', {user , token} , StatusCodes.CREATED)
+    return sendResponse(res, 'Login successfully', {user , token} , StatusCodes.OK)
 })
 
 
