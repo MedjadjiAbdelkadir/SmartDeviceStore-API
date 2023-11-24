@@ -7,6 +7,7 @@ const createToken = async (payload) =>
     await jwt.sign({userId : payload},SECRET_KEY,{
         expiresIn : EXPIRATION
     })
+    
 const verifyToken = async (token)=>{
     try {
         const decode = jwt.verify(token , SECRET_KEY)

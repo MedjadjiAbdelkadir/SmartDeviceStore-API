@@ -19,6 +19,11 @@ const Product = db.define('Product', {
         allowNull :true,
         field: 'brand_id',
     },
+    vendorId : {
+        type : DataTypes.UUID,
+        allowNull :true,
+        field: 'vendor_id',
+    },
     name: {
         type: DataTypes.STRING,
         allowNull: false,

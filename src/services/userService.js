@@ -1,39 +1,64 @@
 const User = require('../models/user')
+const { NotFoundError } = require('../utils/errors')
 
-exports.getUsers = async () => {
+exports.getProfile = async (id)=>{
     try {
-        return await User.findAll({
-            order: [
-                ['created_at', 'ASC'],
-            ],
+        const profile =  await User.findByPk(id) 
+        if(!profile){
+            throw new NotFoundError(`Profile ${id} not found`)
+        }
+        return profile
+    } catch (error) {
+        throw error
+    }
+}
+
+exports.updateProfile = async (id ,firstName, lastName, phone) =>{
+    try {
+        const profile =  await User.findByPk(id) 
+        if(!profile){
+            throw new NotFoundError(`Profile ${id} not found`)
+        }
+        return await profile.update({firstName, lastName, phone})
+    } catch (error) {
+        throw error;
+    }
+}
+
+exports.updateAvatarProfile = async (id ,image) =>{
+    try {
+        const profile =  await User.findByPk(id) 
+        if(!profile){
+            throw new NotFoundError(`Profile ${id} not found`)
+        }
+        return await profile.update({
+            profilePicture:image
         })
     } catch (error) {
         throw error;
     }
 }
-exports.getUser = async (id) =>{
-    try {
-        return await User.findByPk(id)      
-    } catch (error) {
-        throw error;
-    }
-} 
 
-exports.updateUser = async (data) =>{
+exports.deleteAccount = async (id)=>{
     try {
-        const {id ,firstName,lastName,phone} = data
         const user = await User.findByPk(id)
         if(!user){
-            return null
+            throw new NotFoundError(`User ${id} not found`)
         }
-        return await user.update({
-            firstName,lastName,phone
-        })
+        return await user.destroy()
     } catch (error) {
         throw error;
     }
 }
 
-
-
-
+exports.restoreAccount = async (id) =>{
+    try {
+        const account = await User.findByPk(id, { paranoid: false });
+        if(account && account.deletedAt !== null){
+            return await account.restore()   
+        }    
+        throw new NotFoundError(`Account ${id} not found`)
+    } catch (error) {
+        throw error;
+    }
+}

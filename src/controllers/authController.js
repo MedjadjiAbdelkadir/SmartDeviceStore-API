@@ -1,89 +1,59 @@
-const { statusCodes , errorMessages }= require('../utils/statusCodes')
-const { sendSuccessResponse , sendErrorResponse} = require('../utils/sendResponse')
+const { sendResponse } = require("../utils/sendResponse")
+const { StatusCodes } = require("../utils/status")
+const asyncHandler = require("../utils/errorHandler")
 
-const { register, login, forgotPassword, verifyResetCode,resetPassword} = require('../services/authService')
+const authService = require("../services/authService")
 
 /*
     @desc    Register User
-    @route   POST /api/auth/register
+    @route   POST baseURL/api/v1/auth/register
     @access  Public
 */
-exports.register =async (req, res , next)=>{
-    try {
-        const user= await register(req.body)
-        return sendSuccessResponse(res , 'User Register successfully' , user , statusCodes.CREATED) 
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+exports.register = asyncHandler( async (req, res, next) =>{
+    const {user, token}= await authService.register(req.body)   
+    return sendResponse(res, 'Register successfully', {user, token} , StatusCodes.CREATED)
+})
 
 /*
     @desc    Login User
-    @route   POST /api/auth/login
+    @route   POST baseURL/api/v1/auth/login
     @access  Public
 */
-exports.login =async (req, res , next)=>{
-    try {
-        const user= await login(req.body)
-        if(user){
-            return sendSuccessResponse(res , 'User Login successfully' , user , statusCodes.OK) 
-        }
-        return sendErrorResponse(res , 'Email Or Password Incorrect', statusCodes.UNAUTHORIZED)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+exports.login = asyncHandler( async (req, res, next) =>{
+    const {email ,password} = req.body
+    const {user , token} = await authService.login(email ,password)  
+    return sendResponse(res, 'Login successfully', {user , token} , StatusCodes.CREATED)
+})
 
 
 /*
     @desc    Forgot Password
-    @route   POST /api/v1/auth/forgotPassword
+    @route   POST baseURL/api/v1/auth/forgotPassword
     @access  Public
 */
-exports.forgotPassword = async (req, res, next) => {
-    try {
-        const user = await forgotPassword(req.body.email)
-        return sendSuccessResponse(res , 'Send Reset Code successfully' , null , statusCodes.OK) 
-        // if(user){
-        //     return sendSuccessResponse(res , 'Send Reset Code successfully' , null , statusCodes.OK) 
-        // }
-        // return sendErrorResponse(res , 'Error Send Reset Code ', statusCodes.UNAUTHORIZED)
-    } catch (error) {
-        return sendErrorResponse(res , error.message,error.status || statusCodes.INTERNAL_SERVER_ERROR)
-
-        //  return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-
-    }
-}
+exports.forgotPassword = asyncHandler( async (req, res, next) =>{
+    await authService.forgotPassword(req.body.email)
+    return sendResponse(res, 'Send Reset Code successfully', null , StatusCodes.OK)
+})
 
 /*
-    @desc    verify Reset Code
-    @route   POST /api/v1/auth/verifyResetCode
+    @desc    Verify Reset Code
+    @route   POST baseURL/api/v1/auth/verifyResetCode
     @access  Public
 */
-exports.verifyResetCode = async (req, res, next) =>{
-    try {
-        const {resetCode} = req.body
-        const verify = await verifyResetCode(resetCode)
-        return sendSuccessResponse(res , 'Success' , null , statusCodes.OK) 
-    } catch (error) {
-        return sendErrorResponse(res , error.message,error.status || statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+exports.verifyResetCode = asyncHandler( async (req, res, next) =>{
+    const {resetCode} = req.body
+    await authService.verifyResetCode(resetCode)
+    return sendResponse(res, 'Verify Reset Code successfully', null , StatusCodes.OK)
+})
 
 /*
     @desc    Reset Password
-    @route   POST /api/v1/auth/resetPassword
+    @route   POST baseURL/api/v1/auth/resetPassword
     @access  Public
 */
-
-exports.resetPassword = async (req, res, next) =>{
-    try {
-        const {email,password} = req.body
-        const token = await resetPassword(email,password)
-        return sendSuccessResponse(res , 'Success Update Password' , token , statusCodes.OK) 
-    } catch (error) {
-        return sendErrorResponse(res , error.message,error.status || statusCodes.INTERNAL_SERVER_ERROR)
-        
-    }
-}
+exports.resetPassword = asyncHandler( async (req, res, next) =>{
+    const {email,password} = req.body
+    const token = await authService.resetPassword(email,password)
+    return sendResponse(res, 'Updated Password successfully', {token} , StatusCodes.OK)
+})

@@ -1,14 +1,15 @@
-const { check, body } = require('express-validator');
+const { check, body } = require('express-validator')
 
-const validatorMiddleware= require('../../middlewares/validatorMiddleware');
-const Review = require('../../models/review');
-const User = require('../../models/user');
-const Product = require('../../models/product');
+const validatorMiddleware = require('../../middleware/validatorMiddleware')
+
+const Review = require('../../models/review')
+const User = require('../../models/user')
+const Product = require('../../models/product')
 
 exports.getReviewValidator = [
     check('id')
-        .notEmpty().withMessage('Review id is Required')
-        .isUUID().withMessage('Review id is Invalid'),
+        .notEmpty().withMessage('Review id is Required'),
+        // .isUUID().withMessage('Review id is Invalid')
         
     validatorMiddleware,
 ];
@@ -17,7 +18,7 @@ exports.createReviewValidator = [
 
     body('userId')
         .notEmpty().withMessage('User Id is Required')
-        .isUUID().withMessage('User Id Invalid Format')
+        // .isUUID().withMessage('User Id Invalid Format')
         .custom(async(val)=>{
             await User.findByPk(val).then((user)=>{
                 if(!user){
@@ -61,8 +62,8 @@ exports.createReviewValidator = [
 ];
 
 exports.updateReviewValidator = [
-    check('id').notEmpty().withMessage('Review id is Required')
-        .isUUID().withMessage('Review id is Invalid'),
+    check('id').notEmpty().withMessage('Review id is Required'),
+        // .isUUID().withMessage('Review id is Invalid'),
 
     body('userId')
         .optional()

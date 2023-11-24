@@ -1,52 +1,50 @@
-const path = require('path');
-const express = require('express');
-const cors = require('cors');
-
-const app = express();
-app.use(express.json())
-app.use(cors())
-// app.use(cors({
-//     origin: 'http://127.0.0.1:3000',
-// }))
+const path = require('path')
 require('dotenv').config()
+const express = require('express')
+const cors = require('cors')
+
+const app = express()
+
+// Handle Uncaught Exception 
+process.on('UncaughtException', (err)=>{
+    console.error('Uncaught Exception! Shutting down ...')
+    console.error(err.name,err.message)
+    process.exit(1)
+})
+
+
+
+const corsOptions = {
+    origin: "http://localhost:8081"
+}
+// app.use(express.json())
+app.use(cors(corsOptions))
+
+const routes = require('./routes')
+const middlewares = require('./middleware')
+const db = require('./database/config/database')
 
 app.use('/uploads', express.static(path.join(__dirname,'uploads')))
 
-
-const routes = require('./routes/index');
-const middlewares = require('./middlewares/middlewares');
-
-const db = require('./database/config/index');
-
-// Routes
-app.use('/api', routes)
-// middlewares
+app.use('/api/v1', routes)
 middlewares(app)
-// app.use((req, res, next) =>next(middlewares(app)))
-// app.use(middlewares)
 
-// app.use((error, req, res , next)=> next(error))
+db.authenticate().then(()=>{
+    console.log('Server has successfully connected to the database')
+})
 
-// app.use((error, req, res , next)=>{
-//     res.status(error.statusCode || 400).json({
-//         'errorCode': error.statusCode,
-//         'status' : error.status,
-//         'message': error.message,
-//     });
-// })
-
-const { HOST , PORT} = process.env;
-// Starting Server 
-const server = app.listen(PORT || 4000 , HOST, () => {
-    console.log(`Server started at http://${HOST}:${PORT}`);
-});
-
+const port = process.env.PORT || 4000
+const host = process.env.HOST
+const server = app.listen(port, host, () => {
+    console.log(`Server started at http://${host}:${port}`)
+})
 
 // Handle rejection outside express
 process.on('unhandledRejection', (err) => {
-    console.error(`UnhandledRejection Errors: ${err.name} | ${err.message}`);
+    console.error('Unhandled Rejection! Shutting down ...')
+    console.error(err.name,err.message)
     server.close(() => {
-        console.error(`Server Has down....`);
-        process.exit(1);
-    });
-});
+        console.error(`Server Has down....`)
+        process.exit(1)
+    })
+})

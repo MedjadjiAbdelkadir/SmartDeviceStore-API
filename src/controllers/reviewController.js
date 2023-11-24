@@ -1,133 +1,98 @@
-const { statusCodes , errorMessages }= require('../utils/statusCodes')
-const { sendSuccessResponse , sendErrorResponse} = require('../utils/sendResponse')
+const asyncHandler = require("../utils/errorHandler")
+const { sendResponse } = require("../utils/sendResponse")
+const { StatusCodes } = require("../utils/status")
 
-const { getReviews, getReview, createReview, updateReview, deleteReview, restoreReview, forceDeleteReview} = require('../services/reviewService')
+const reviewService = require("../services/reviewService")
 
 /*
     @desc    Get All Reviews
-    @route   GET /api/reviews
+    @route   GET baseURL/api/v1/reviews
     @access  Public
 */
-
-exports.getReviews = async (req, res) =>{
-    try {
-        const reviews = await  getReviews()
-        if(reviews.length > 0){
-            return sendSuccessResponse(res , 'success' , {reviews} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'No Reviews' , statusCodes.NOT_FOUND) 
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
+exports.getReviews = asyncHandler( async (req, res, next) =>{
+    const { page = 1, limit = 5, sortBy, sortOrder, name, slug } = req.query;
+    const filters = {
+        page: +page ? page :1,
+        limit:+limit ? +limit :5,
+        sortBy, 
+        sortOrder, 
+        name, 
+        slug
     }
-}
+    const reviews = await  reviewService.getReviews(filters)
+    return sendResponse(res, 'success', {reviews} , StatusCodes.OK)
+})
 
 /*
-    @desc    Get Single Review
-    @route   GET /api/reviews/:id
+    @desc    Get Review By ID
+    @route   GET baseURL/api/v1/reviews/:id
     @access  Public
 */
-exports.getReview = async (req, res) =>{
-    try {
-        const review = await  getReview({id:req.params.id})
-        if(review){
-            return sendSuccessResponse(res , 'success' , {review} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Review Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , error.message, statusCodes.INTERNAL_SERVER_ERROR)
-
-        // return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }    
-}
-
-// Nested route (Create)
-exports.setProductIDAndUserIdToBody = (req, res, next) => {
-    if (!req.body.productId) req.body.productId = req.params.productId
-    if (!req.body.userId){
-        req.body.userId = req.user.id.toString()
-    }
-    next()
-};
+exports.getReview = asyncHandler( async (req, res, next)=>{
+    const review = await  reviewService.getReview(req.params.id)
+    return sendResponse(res, 'success', {review} , StatusCodes.OK)
+})
 
 /*
-    @desc    Create Review
-    @route   POST /api/reviews
-    @access  Private/User
+    @desc    Create Review 
+    @route   POST baseURL/api/v1/reviews
+    @access  PRIVATE | ADMIN
 */
-
-exports.createReview =async (req, res , next)=>{
-    try {
-        const review = await  createReview(req.body)
-        return sendSuccessResponse(res , 'Review created successfully' , {review} , statusCodes.CREATED) 
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
-
+exports.createReview = asyncHandler( async (req, res, next)=>{
+    const review = await  reviewService.Review(req.body)
+    return sendResponse(res, 'Review created successfully', {review} , StatusCodes.CREATED)
+})
 
 /*
-    @desc    Update Review
-    @route   PATCH /api/reviews
-    @access  Private/User
+    @desc    Update Review 
+    @route   PATCH baseURL/api/v1/reviews/:id
+    @access  PRIVATE | ADMIN
 */
-exports.updateReview = async (req, res) =>{
-    try {
-        const review = await  updateReview(req.body)
-        if(review){
-            return sendSuccessResponse(res , 'Review updated successfully' , {review} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Review Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+exports.updateReview = asyncHandler( async (req, res, next)=>{
+    const {id} = req.params
+    const review = await  reviewService.updateReview(id, req.body)
+    return sendResponse(res, 'Review updated successfully', {review} , StatusCodes.OK)
+
+})
 
 /*
-    @desc    Delete Single Review
-    @route   DELETE /api/reviews/:id
-    @access  Private/User
+    @desc    Delete Review 
+    @route   DELETE baseURL/api/v1/reviews/:id
+    @access  PRIVATE | ADMIN
 */
-exports.deleteReview = async (req, res) =>{
-    try {
-        await deleteReview(req.params.id)
-        return sendSuccessResponse(res , 'success' , null , statusCodes.NO_CONTENT)
-    } catch (error) {
-        return sendErrorResponse(res , error.message, statusCodes.INTERNAL_SERVER_ERROR)
-
-        // return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }  
-}
+exports.deleteReview = asyncHandler( async (req, res, next)=>{
+    const {id} = req.params
+    await  reviewService.deleteReview(id)
+    return sendResponse(res, 'Review deleted successfully', null, StatusCodes.NO_CONTENT)
+})
 
 /*
-    @desc    Restore Single Review
-    @route   PATCH /api/reviews/restore/:id
-    @access  Private/User
+    @desc    Get All Reviews
+    @route   GET baseURL/api/v1/reviews/trash
+    @access  PRIVATE | ADMIN
 */
-exports.restoreReview = async (req, res) =>{
-    try {
-        const review = await  restoreReview(req.params.id)
-        if(review){
-            return sendSuccessResponse(res , 'success' , review , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Review Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+exports.allTrashReviews = asyncHandler( async (req, res, next)=>{
+    const reviews = await  reviewService.allTrashReviews()
+    return sendResponse(res, 'All Trash Reviews', {reviews}, StatusCodes.OK)
+
+})
 
 /*
-    @desc    Force Delete Review 
-    @route   DELETE /api/reviews/force/:id
-    @access  Private/User
+    @desc    Restore Review by ID 
+    @route   PATCH baseURL/api/v1/reviews/restore/:id
+    @access  PRIVATE | ADMIN
 */
-exports.forceDeleteReview = async (req, res) =>{
-    try {
-        const review = await  forceDeleteReview({id:req.params.id})
-    if(review){
-        return sendSuccessResponse(res , 'success' , null , statusCodes.OK)
-    }
-    return sendErrorResponse(res , 'This Review Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+exports.restoreReview = asyncHandler( async (req, res, next)=>{
+    const review = await  reviewService.restoreReview(req.params.id)
+    return sendResponse(res, 'Restore Review successfully', {review}, StatusCodes.OK)
+})
+
+/*
+    @desc    force Delete Review
+    @route   DELETE baseURL/api/v1/reviews/force-delete/:id
+    @access  PRIVATE | ADMIN
+*/
+exports.forceDeleteReview = asyncHandler( async (req, res, next)=>{
+    await  reviewService.forceDeleteReview(req.params.id)
+    return sendResponse(res, 'Force Deleted Review successfully', null, StatusCodes.NO_CONTENT)
+})

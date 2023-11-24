@@ -1,132 +1,98 @@
-const { statusCodes , errorMessages }= require('../utils/statusCodes')
-const { sendSuccessResponse , sendErrorResponse} = require('../utils/sendResponse')
+const asyncHandler = require("../utils/errorHandler")
+const { sendResponse } = require("../utils/sendResponse")
+const { StatusCodes } = require("../utils/status")
 
-const { getProducts, getProduct, createProduct, updateProduct, deleteProduct, restoreProduct, forceDeleteProduct} = require('../services/productService')
+const productService = require("../services/productService")
 
 /*
-    @desc    Get list of Products
-    @route   GET /api/products
+    @desc    Get All Product
+    @route   GET baseURL/api/v1/products
     @access  Public
 */
-exports.getProducts = async (req, res) =>{
-    try {
-        const products = await  getProducts()
-        if(products.length > 0){
-            return sendSuccessResponse(res , 'success' , {products} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'No Products' , statusCodes.NOT_FOUND) 
-    } catch (error) {
-        return sendErrorResponse(res , error.message, statusCodes.INTERNAL_SERVER_ERROR)
-        
-        // return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
+exports.getProducts = asyncHandler( async (req, res, next) =>{
+    const { page = 1, limit = 5, sortBy, sortOrder, name, slug } = req.query;
+    const filters = {
+        page: +page ? page :1,
+        limit:+limit ? +limit :5,
+        sortBy, 
+        sortOrder, 
+        name, 
+        slug
     }
-}
+    const products = await  productService.getProducts(filters)
+    return sendResponse(res, 'success', {products} , StatusCodes.OK)
+})
 
 /*
-    @desc    Get Product by ID
-    @route   GET /api/products/:id
+    @desc    Get Product By ID
+    @route   GET baseURL/api/v1/products/:id
     @access  Public
 */
-exports.getProduct = async (req, res) =>{
-    try {
-        const product = await  getProduct({id:req.params.id})
-        if(product){
-            return sendSuccessResponse(res , 'success' , {product} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Product Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , error.message, statusCodes.INTERNAL_SERVER_ERROR)
-
-        // return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }    
-}
+exports.getProduct = asyncHandler( async (req, res, next)=>{
+    const product = await  productService.getProduct(req.params.id)
+    return sendResponse(res, 'success', {product} , StatusCodes.OK)
+})
 
 /*
-    @desc    Create Product
-    @route   POST /api/products
-    @access  Public
+    @desc    Create Product 
+    @route   POST baseURL/api/v1/products
+    @access  PRIVATE | ADMIN
 */
-
-exports.createProduct =async (req, res , next)=>{
-    try {
-        // const { name , fields } = req.body
-    //    fields.map(field => console.log(`id_attr : ${field.id} --> value : ${field.value}`))
-        const product = await  createProduct(req.body)
-        return sendSuccessResponse(res , 'Product created successfully' , {product} , statusCodes.CREATED) 
-    } catch (error) {
-        //return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-
-        return sendErrorResponse(res , error.message, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
-
+exports.createProduct = asyncHandler( async (req, res, next)=>{
+    const product = await  productService.createProduct(req.body)
+    return sendResponse(res, 'Product created successfully', {product} , StatusCodes.CREATED)
+})
 
 /*
-    @desc    Update Product
-    @route   PATCH /api/subcategories
-    @access  Public
+    @desc    Update Product 
+    @route   PATCH baseURL/api/v1/products/:id
+    @access  PRIVATE | ADMIN
 */
-exports.updateProduct = async (req, res) =>{
-    try {
-        const {id}  = req.params
-        const product = await  updateProduct(id, req.body)
-        if(product){
-            return sendSuccessResponse(res , 'Product updated successfully' , {product} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Product Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+exports.updateProduct = asyncHandler( async (req, res, next)=>{
+    const {id} = req.params
+    const product = await  productService.updateProduct(id, req.body)
+    return sendResponse(res, 'Product updated successfully', {product} , StatusCodes.OK)
+
+})
 
 /*
-    @desc    Delete Product by ID
-    @route   DELETE /api/products/:id
-    @access  Public
+    @desc    Delete Product 
+    @route   DELETE baseURL/api/v1/products/:id
+    @access  PRIVATE | ADMIN
 */
-exports.deleteProduct = async (req, res) =>{
-    try {
-        const product = await  getProduct({id:req.params.id})
-        if(product){
-            await  deleteProduct({id:req.params.id})
-            return sendSuccessResponse(res , 'success' , null , statusCodes.NO_CONTENT)
-        }
-        return sendErrorResponse(res , 'This Product Not Found' , statusCodes.NOT_FOUND)   
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }  
-}
+exports.deleteProduct = asyncHandler( async (req, res, next)=>{
+    const {id} = req.params
+    await  productService.deleteProduct(id)
+    return sendResponse(res, 'Product deleted successfully', null, StatusCodes.NO_CONTENT)
+})
 
 /*
-    @desc    Restore Product by ID
-    @route   PATCH /api/products/restore/:id
-    @access  Public
+    @desc    Get All Products
+    @route   GET baseURL/api/v1/products/trash
+    @access  PRIVATE | ADMIN
 */
-exports.restoreProduct = async (req, res) =>{
-    try {
-        const product = await  restoreProduct({id:req.params.id})
-        if(product){
-            return sendSuccessResponse(res , 'success' , product , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Product Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+exports.allTrashProducts = asyncHandler( async (req, res, next)=>{
+    const product = await  productService.allTrashProducts()
+    return sendResponse(res, 'All Trash Products', {product}, StatusCodes.OK)
+
+})
 
 /*
-    @desc    Force Delete Product by ID
-    @route   DELETE /api/products/force/:id
-    @access  Public
+    @desc    Restore Product by ID 
+    @route   PATCH baseURL/api/v1/products/restore/:id
+    @access  PRIVATE | ADMIN
 */
-exports.forceDeleteProduct = async (req, res) =>{
-    try {
-        const product = await  forceDeleteProduct({id:req.params.id})
-    if(product){
-        return sendSuccessResponse(res , 'success' , null , statusCodes.OK)
-    }
-    return sendErrorResponse(res , 'This Product Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+exports.restoreProduct = asyncHandler( async (req, res, next)=>{
+    const product = await  productService.restoreProduct(req.params.id)
+    return sendResponse(res, 'Restore Product successfully', {product}, StatusCodes.OK)
+})
+
+/*
+    @desc    force Delete Product
+    @route   DELETE baseURL/api/v1/products/force-delete/:id
+    @access  PRIVATE | ADMIN
+*/
+exports.forceDeleteProduct = asyncHandler( async (req, res, next)=>{
+    await  productService.forceDeleteProduct(req.params.id)
+    return sendResponse(res, 'Force Deleted Product successfully', null, StatusCodes.NO_CONTENT)
+})

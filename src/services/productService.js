@@ -1,30 +1,53 @@
+const { Op } = require('sequelize')
+const { NotFoundError } = require('../utils/errors')
+
 const Product = require('../models/product');
 const ProductAttribute = require('../models/productAttribute');
-const Attribute = require('../models/attribute');
 
-exports.getProducts = async () => {
+exports.getProducts = async ({ page , limit, sortBy, sortOrder, name, slug })=>{
     try {
-        return await Product.findAll({
-            order: [
-                ['created_at', 'ASC'],
-            ],
-        })
+        const whereCondition = {};
+        if (name) whereCondition.name = { [Op.iLike]: `%${name}%` }
+        if (slug) whereCondition.slug = { [Op.iLike]: `%${slug}%` }
+
+        const order = sortBy ? [[sortBy, sortOrder || 'ASC']] : [['created_at', 'DESC']]
+        const options = {
+            limit: limit,
+            offset: (page - 1) * limit || 0,
+            where: whereCondition,
+            order,
+        };
+        const data = await Product.findAndCountAll(options)
+        if(data.count === 0){
+            throw new NotFoundError('There are no Products')
+        }
+        const response = {
+            totalPages : Math.ceil(data.count/limit),
+            totalItems :data.count ,
+            products : data.rows
+        }
+        return response
     } catch (error) {
-        throw error;
+        throw error
     }
 }
 
-exports.getProduct = async ({id}) =>{
+exports.getProduct = async (id)=>{
     try {
-        return await Product.findByPk(id)      
+        const product =  await Product.findByPk(id) 
+        if(!product){
+            throw new NotFoundError(`Product ${id} not found`)
+        }
+        return product
     } catch (error) {
-        throw error;
+        throw error
     }
-} 
+}
 
 exports.createProduct = async (data) =>{
     try {
         const {name, slug, description, quantity, price, priceAfterDiscount,subCategoryId,brandId, fields} = data
+
         let productId
         await Product.create({
             name, slug, description, quantity, price, priceAfterDiscount,subCategoryId,brandId,
@@ -41,52 +64,29 @@ exports.createProduct = async (data) =>{
                     })
                 })
             )
-
         }).then((product) => {
-
             console.log('Product has created',product);
-        });
-
-        // console.log('newProduct : ', newProduct);
-             
-        return await Product.findByPk(productId,{
-            attributes : ['id' ,'name', 'slug', 'description', 'quantity', 'price', 'priceAfterDiscount'] ,
-            include: [{
-                model:Attribute, 
-                as : 'features',
-                attributes: ['id','name'], 
-                through: {
-                    as: 'values',
-                    // as: '',
-                    attributes: ['value'],
-                }
-            }]
-        })
-    } catch (error) {
-        throw error;
-    }
-} 
-
-exports.updateProduct = async ({id , data}) =>{
-    try {
-        const {name, slug, description, quantity, price, priceAfterDiscount,fields} = data
-        const product = await Product.findByPk(id)
-        if(!product){
-            return null
-        }
-        await product.update({
-            name, slug, description, quantity, price, priceAfterDiscount
+        }).catch(err=>{
+            throw err;
         })
     } catch (error) {
         throw error;
     }
 }
 
-exports.deleteProduct = async ({ id })=>{
+exports.updateProduct = async (id,data) =>{
+    try {
+        // Logic for updating a product 
+    } catch (error) {
+        throw error;
+    }
+}
+
+exports.deleteProduct = async (id)=>{
     try {
         const product = await Product.findByPk(id)
         if(!product){
-            return null
+            throw new NotFoundError(`Product ${id} not found`)
         }
         return await product.destroy()
     } catch (error) {
@@ -94,21 +94,43 @@ exports.deleteProduct = async ({ id })=>{
     }
 }
 
-exports.restoreProduct = async ({ id }) =>{
+exports.restoreProduct = async (id) =>{
     try {
-        const product = await Product.findByPk(id,{ paranoid: false })
-        if(!product){
-            return null
-        }
-        return await product.restore()        
+        const product = await Product.findByPk(id, { paranoid: false });
+        if(product && product.deletedAt !== null){
+            return await product.restore()   
+        }    
+        throw new NotFoundError(`Product ${id} not found`)
     } catch (error) {
         throw error;
     }
 }
 
-exports.forceDeleteProduct = async ({ id }) =>{
+exports.forceDeleteProduct = async (id) =>{
     try {
-        return Product.destroy({ where: { id }, force: true })           
+        const product = await Product.findByPk(id, { paranoid: false });
+        if(product && product.deletedAt !== null){
+            return await product.destroy({force: true })   
+        }    
+        throw new NotFoundError(`Product ${id} not found`)        
+    } catch (error) {
+        throw error;
+    }
+}
+
+exports.allTrashProducts = async () =>{
+    try {
+        const products = Product.findAll({
+            where: {
+                deletedAt: { [Op.ne]: null }
+            },
+            paranoid: false
+        })
+        if(!products){
+            throw new NotFoundError('There are no products in Trash')
+        }
+        return products
+
     } catch (error) {
         throw error;
     }

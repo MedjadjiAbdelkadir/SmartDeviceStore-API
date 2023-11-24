@@ -1,12 +1,10 @@
 const { check, body } = require('express-validator');
-const slugify = require('slugify')
-
-const validatorMiddleware= require('../../middlewares/validatorMiddleware')
+const slugify = require('slugify');
+const validatorMiddleware = require('../../middleware/validatorMiddleware');
 
 exports.getBrandValidator = [
-    check('id').notEmpty().withMessage('Brand id is Required')
-    .isUUID().withMessage('Review id is Invalid'),
-
+    check('id').notEmpty().withMessage('Brand id is Required'),
+    // .isUUID().withMessage('Brand id is Invalid'),
     validatorMiddleware,
 ];
 
@@ -29,8 +27,8 @@ exports.createBrandValidator = [
 
 exports.updateBrandValidator = [
     check('id')
-        .notEmpty().withMessage('Brand id is Required')
-        .isUUID().withMessage('Review id is Invalid'),
+        .notEmpty().withMessage('Brand id is Required'),
+        // .isUUID().withMessage('Brand id is Invalid'),
         
     body('name').optional().trim()
     .isString().withMessage('Brand name is String')

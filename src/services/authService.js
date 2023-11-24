@@ -1,11 +1,13 @@
 const crypto = require('crypto')
 
-const {hashPassword ,comparePassword} = require('../utils/passwordUtils')
+const APIError = require('../utils/apiError')
+const sendEmail = require('../utils/emails/sendEmail')
+const { NotFoundError } = require('../utils/errors')
+const { hashPassword, comparePassword } = require('../utils/passwordUtils')
+const { StatusCodes } = require('../utils/status')
 const { createToken } = require('../utils/tokenUtils')
-const sendEmail = require('../utils/sendEmail')
 
 const User = require('../models/user')
-
 
 exports.register = async (data) =>{
     try {
@@ -24,9 +26,8 @@ exports.register = async (data) =>{
     }
 }
 
-exports.login = async (data) =>{
-    try {
-        const {email ,password} = data   
+exports.login = async (email ,password) =>{
+    try {  
         const user  = await User.findOne({
             where : {email: email}
         })
@@ -36,13 +37,13 @@ exports.login = async (data) =>{
                 user , token
             }
         }
-        return null
+        throw new NotFoundError('Email or password is incorrect, please try again')
     } catch (error) {
         throw error
     }
 }
 
-exports.forgotPassword = async (email) =>{
+exports.forgotPassword = async (email) =>{ 
     
     // 1) Find user by email
     const user = await User.findOne({
@@ -50,10 +51,7 @@ exports.forgotPassword = async (email) =>{
     })
 
     if(!user){
-        const error = new Error()
-        error.message = `There is no user with that email ${email}`
-        error.status = 404
-        throw error
+        throw new NotFoundError(`There is no user with that email ${email}`)
     }
 
     // 2) If user exist, Generate hash reset random 6 digits and save it in db
@@ -117,14 +115,14 @@ exports.verifyResetCode = async(resetCode)=>{
 
         // 1) Find user by email
         const user = await User.findOne({
-            where : {passwordResetCode : hashedResetCode}
+            where : {
+                passwordResetCode : hashedResetCode
+                // passwordResetExpires: { $gt: Date.now() },
+            }
         })
 
         if(!user){
-            const error = new Error()
-            error.message = `Reset code ${resetCode} invalid or expired`
-            error.status = 404
-            throw error
+            throw new APIError(`Reset code ${resetCode} invalid or expired`,StatusCodes.BAD_REQUEST)
         }
         // 2) Reset code valid
         user.passwordResetVerified = true
@@ -146,17 +144,11 @@ exports.resetPassword = async (email,newPassword)=>{
         })
 
         if(!user){
-            const error = new Error()
-            error.message = `There is no user with that email ${email}`
-            error.status = 404
-            throw error
+            throw new NotFoundError(`There is no user with that email ${email}`)
         }
           // 2) Check if reset code verified
         if (!user.passwordResetVerified) {
-            const error = new Error()
-            error.message = `Reset code not verified`
-            error.status = 400
-            throw error
+            throw new APIError(`Reset code not verified`,StatusCodes.BAD_REQUEST)
         }
         user.password = await hashPassword(newPassword)
         user.passwordChangedAt = Date.now()

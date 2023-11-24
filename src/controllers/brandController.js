@@ -1,127 +1,147 @@
-const { statusCodes , errorMessages }= require('../utils/statusCodes')
-const { sendSuccessResponse , sendErrorResponse} = require('../utils/sendResponse')
+const sharp = require('sharp')
+const { v4: uuidv4 } = require('uuid')
 
-const { getBrands, getBrand, createBrand, updateBrand, deleteBrand, restoreBrand, forceDeleteBrand} = require('../services/brandService')
+const asyncHandler = require("../utils/errorHandler")
+const APIError = require("../utils/apiError")
+const { sendResponse } = require("../utils/sendResponse")
+const { StatusCodes } = require("../utils/status")
+
+const brandService = require("../services/brandService")
 
 /*
-    @desc    Get list of Brands
-    @route   GET /api/brands
+    @desc    Get All Brands
+    @route   GET baseURL/api/v1/brands
     @access  Public
 */
-exports.getBrands = async (req, res) =>{
-    try {
-        const brands = await  getBrands()
-        if(brands.length > 0){
-            return sendSuccessResponse(res , 'success' , {brands} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'No Brands' , statusCodes.NOT_FOUND) 
-    } catch (error) {
-        return sendErrorResponse(res , error.message, statusCodes.INTERNAL_SERVER_ERROR)
-
-        // return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
+exports.getBrands = asyncHandler( async (req, res, next) =>{
+    const { page = 1, limit = 5, sortBy, sortOrder, name, slug } = req.query;
+    const filters = {
+        page: +page ? page :1,
+        limit:+limit ? +limit :5,
+        sortBy, 
+        sortOrder, 
+        name, 
+        slug
     }
-}
+    const brands = await  brandService.getBrands(filters)
+    return sendResponse(res, 'success', {brands} , StatusCodes.OK)
+})
 
 /*
-    @desc    Get Brand by ID
-    @route   GET /api/brands/:id
+    @desc    Get Brand By ID
+    @route   GET baseURL/api/v1/brands/:id
     @access  Public
 */
-exports.getBrand = async (req, res) =>{
-    try {
-        const brand = await  getBrand({id:req.params.id})
-        if(brand){
-            return sendSuccessResponse(res , 'success' , {brand} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Brand Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }    
-}
+exports.getBrand = asyncHandler( async (req, res, next)=>{
+    const brand = await  brandService.getBrand(req.params.id)
+    return sendResponse(res, 'success', {brand} , StatusCodes.OK)
+})
 
 /*
-    @desc    Create Brand
-    @route   POST /api/brands
-    @access  Public
+    @desc    Create Brand 
+    @route   POST baseURL/api/v1/brands
+    @access  PRIVATE | ADMIN
 */
+exports.createBrand = asyncHandler( async (req, res, next)=>{
+    const { name ,slug, image} = req.body
+    const brand = await  brandService.createBrand(name ,slug, image)
+    return sendResponse(res, 'Brand created successfully', {brand} , StatusCodes.CREATED)
+})
 
-exports.createBrand =async (req, res , next)=>{
-    try {
-        const { name ,slug, image} = req.body
-        const brand = await  createBrand({name,slug, image})
-        return sendSuccessResponse(res , 'Brand created successfully' , {brand} , statusCodes.CREATED) 
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
+/*
+    @desc    Update Brand 
+    @route   PATCH baseURL/api/v1/brands/:id
+    @access  PRIVATE | ADMIN
+*/
+exports.updateBrand = asyncHandler( async (req, res, next)=>{
+    const {id} = req.params
+    const {name , slug , image} = req.body
+    const brand = await  brandService.updateBrand(id, name ,slug, image)
+    return sendResponse(res, 'Brand updated successfully', {brand} , StatusCodes.OK)
+
+})
+
+/*
+    @desc    Delete Brand 
+    @route   DELETE baseURL/api/v1/brands/:id
+    @access  PRIVATE | ADMIN
+*/
+exports.deleteBrand = asyncHandler( async (req, res, next)=>{
+    const {id} = req.params
+    await  brandService.deleteBrand(id)
+    return sendResponse(res, 'Brand deleted successfully', null, StatusCodes.NO_CONTENT)
+})
+
+/*
+    @desc    Get All Brands
+    @route   GET baseURL/api/v1/brands/trash
+    @access  PRIVATE | ADMIN
+*/
+exports.allTrashBrands = asyncHandler( async (req, res, next)=>{
+    const brand = await  brandService.allTrashBrands()
+    return sendResponse(res, 'All Trash Brand', {brand}, StatusCodes.OK)
+
+})
+
+/*
+    @desc    Restore Brand by ID 
+    @route   PATCH baseURL/api/v1/brands/restore/:id
+    @access  PRIVATE | ADMIN
+*/
+exports.restoreBrand = asyncHandler( async (req, res, next)=>{
+    const brand = await  brandService.restoreBrand(req.params.id)
+    return sendResponse(res, 'Restore Brand successfully', {brand}, StatusCodes.OK)
+})
+
+/*
+    @desc    force Delete Brand
+    @route   DELETE baseURL/api/v1/brands/force-delete/:id
+    @access  PRIVATE | ADMIN
+*/
+exports.forceDeleteBrand = asyncHandler( async (req, res, next)=>{
+    await  brandService.forceDeleteBrand(req.params.id)
+    return sendResponse(res, 'Force Deleted Brand successfully', null, StatusCodes.NO_CONTENT)
+})
+
+/*
+    @desc    Resize Create Brand Image  Middleware
+    @used : buffer && sharp package
+*/
+exports.resizeCreateBrandImage = asyncHandler(async (req, res, next)=>{
+    if(req.file && req.file.buffer){
+        const filename= `brands-${uuidv4()}-${Date.now()}.jpeg`
+        await sharp(req.file.buffer)
+        .resize(400,400)
+        .toFormat('jpeg')
+        .jpeg({quality: 100})
+        .toFile(`src/uploads/brands/${filename}`)
+        .then(()=> {
+            req.body.image = filename
+            console.log(req.body.image);
+        }).catch(err => new APIError(err.message , StatusCodes.BAD_REQUEST))
     }
-}
-
-
-/*
-    @desc    Update Brand
-    @route   PATCH /api/brands
-    @access  Public
-*/
-exports.updateBrand = async (req, res) =>{
-    try {
-        const { id, name } = req.body 
-        const brand = await  updateBrand({id, name})
-        if(brand){
-            return sendSuccessResponse(res , 'Brand updated successfully' , {brand} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Brand Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+    next()
+})
 
 /*
-    @desc    Delete Brand by ID
-    @route   DELETE /api/brands/:id
-    @access  Public
+    @desc    Resize Update Brand Image  Middleware
+    @used : buffer && sharp package
 */
-exports.deleteBrand = async (req, res) =>{
-    try {
-        const brand = await  getBrand({id:req.params.id})
-        if(brand){
-            await  deleteBrand({id:req.params.id})
-            return sendSuccessResponse(res , 'success' , null , statusCodes.NO_CONTENT)
-        }
-        return sendErrorResponse(res , 'This Brand Not Found' , statusCodes.NOT_FOUND)   
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }  
-}
+exports.resizeUpdateBrandImage = asyncHandler(async (req, res, next)=>{
+    if(req.file && req.file.buffer){
 
-/*
-    @desc    Restore Brand by ID
-    @route   PATCH /api/brands/restore/:id
-    @access  Public
-*/
-exports.restoreBrand = async (req, res) =>{
-    try {
-        const brand = await  restoreBrand({id:req.params.id})
-        if(brand){
-            return sendSuccessResponse(res , 'success' , brand , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Brand Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+        // Remove current image from src/uploads/brands/url-images
 
-/*
-    @desc    Force Delete Brand by ID
-    @route   DELETE /api/brands/force/:id
-    @access  Public
-*/
-exports.forceDeleteBrand = async (req, res) =>{
-    try {
-        const brand = await  forceDeleteBrand({id:req.params.id})
-    if(brand){
-        return sendSuccessResponse(res , 'success' , null , statusCodes.OK)
+        const filename= `brands-${uuidv4()}-${Date.now()}.jpeg`
+        await sharp(req.file.buffer)
+        .resize(400,400)
+        .toFormat('jpeg')
+        .jpeg({quality: 100})
+        .toFile(`src/uploads/brands/${filename}`)
+        .then(()=> {
+            req.body.image = filename
+            console.log(req.body.image);
+        }).catch(err => new APIError(err.message , StatusCodes.BAD_REQUEST))
     }
-    return sendErrorResponse(res , 'This Brand Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+    next()
+})

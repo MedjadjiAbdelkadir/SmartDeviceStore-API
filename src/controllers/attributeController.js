@@ -1,125 +1,100 @@
-const { statusCodes , errorMessages }= require('../utils/statusCodes')
-const { sendSuccessResponse , sendErrorResponse} = require('../utils/sendResponse')
+const asyncHandler = require("../utils/errorHandler")
+const { sendResponse } = require("../utils/sendResponse")
+const { StatusCodes } = require("../utils/status")
 
-const { getAttributes, getAttribute, createAttribute, updateAttribute, deleteAttribute, restoreAttribute, forceDeleteAttribute} = require('../services/attributeService')
+const attributeService = require("../services/attributeService")
 
 /*
-    @desc    Get list of Attributes
-    @route   GET /api/attributes
+    @desc    Get All Attributes
+    @route   GET baseURL/api/v1/attributes
     @access  Public
 */
-exports.getAttributes = async (req, res) =>{
-    try {
-        const attributes = await  getAttributes()
-        if(attributes.length > 0){
-            return sendSuccessResponse(res , 'success' , {attributes} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'No Attributes' , statusCodes.NOT_FOUND) 
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
+exports.getAttributes = asyncHandler( async (req, res, next) =>{
+    const { page = 1, limit = 5, sortBy, sortOrder, name, slug } = req.query;
+    const filters = {
+        page: +page ? page :1,
+        limit:+limit ? +limit :5,
+        sortBy, 
+        sortOrder, 
+        name, 
+        slug
     }
-}
+    const attributes = await  attributeService.getAttributes(filters)
+    return sendResponse(res, 'success', {attributes} , StatusCodes.OK)
+})
 
 /*
-    @desc    Get Attribute by ID
-    @route   GET /api/attributes/:id
+    @desc    Get Attribute By ID
+    @route   GET baseURL/api/v1/attributes/:id
     @access  Public
 */
-exports.getAttribute = async (req, res) =>{
-    try {
-        const attribute = await  getAttribute({id:req.params.id})
-        if(attribute){
-            return sendSuccessResponse(res , 'success' , {attribute} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Attribute Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }    
-}
+exports.getAttribute = asyncHandler( async (req, res, next)=>{
+    const attribute = await  attributeService.getAttribute(req.params.id)
+    return sendResponse(res, 'success', {attribute} , StatusCodes.OK)
+})
 
 /*
-    @desc    Create Attribute
-    @route   POST /api/attributes
-    @access  Public
+    @desc    Create Attribute 
+    @route   POST baseURL/api/v1/attributes
+    @access  PRIVATE | ADMIN
 */
-
-exports.createAttribute =async (req, res , next)=>{
-    try {
-        const { name, slug } = req.body
-        const attribute = await  createAttribute({name, slug})
-        return sendSuccessResponse(res , 'Attribute created successfully' , {attribute} , statusCodes.CREATED) 
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
-
+exports.createAttribute = asyncHandler( async (req, res, next)=>{
+    const { name ,slug} = req.body
+    const attribute = await  attributeService.createBrand(name ,slug)
+    return sendResponse(res, 'Attribute created successfully', {attribute} , StatusCodes.CREATED)
+})
 
 /*
-    @desc    Update Attribute
-    @route   PATCH /api/subcategories
-    @access  Public
+    @desc    Update Attribute 
+    @route   PATCH baseURL/api/v1/attributes/:id
+    @access  PRIVATE | ADMIN
 */
-exports.updateAttribute= async (req, res) =>{
-    try {
-        const { id, name, slug } = req.body 
-        const attribute = await  updateAttribute({id, name,slug})
-        if(attribute){
-            return sendSuccessResponse(res , 'Attribute updated successfully' , {attribute} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Attribute Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+exports.updateAttribute = asyncHandler( async (req, res, next)=>{
+    const {id} = req.params
+    const {name , slug} = req.body
+    const attribute = await  attributeService.updateAttribute(id, name ,slug)
+    return sendResponse(res, 'Attribute updated successfully', {attribute} , StatusCodes.OK)
+
+})
 
 /*
-    @desc    Delete Attribute by ID
-    @route   DELETE /api/attributes/:id
-    @access  Public
+    @desc    Delete Attribute 
+    @route   DELETE baseURL/api/v1/attributes/:id
+    @access  PRIVATE | ADMIN
 */
-exports.deleteAttribute = async (req, res) =>{
-    try {
-        const attribute = await  getAttribute({id:req.params.id})
-        if(attribute){
-            await  deleteAttribute({id:req.params.id})
-            return sendSuccessResponse(res , 'success' , null , statusCodes.NO_CONTENT)
-        }
-        return sendErrorResponse(res , 'This Attribute Not Found' , statusCodes.NOT_FOUND)   
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }  
-}
+exports.deleteAttribute = asyncHandler( async (req, res, next)=>{
+    const {id} = req.params
+    await  attributeService.deleteBrand(id)
+    return sendResponse(res, 'Brand deleted successfully', null, StatusCodes.NO_CONTENT)
+})
 
 /*
-    @desc    Restore Attribute by ID
-    @route   PATCH /api/attributes/restore/:id
-    @access  Public
+    @desc    Get All Attributes
+    @route   GET baseURL/api/v1/attributes/trash
+    @access  PRIVATE | ADMIN
 */
-exports.restoreAttribute = async (req, res) =>{
-    try {
-        const attribute = await  restoreAttribute({id:req.params.id})
-        if(attribute){
-            return sendSuccessResponse(res , 'success' , attribute , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Attribute Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+exports.allTrashAttributes = asyncHandler( async (req, res, next)=>{
+    const attribute = await  attributeService.allTrashAttributes()
+    return sendResponse(res, 'All Trash Attribute', {attribute}, StatusCodes.OK)
+
+})
 
 /*
-    @desc    Force Delete Attribute by ID
-    @route   DELETE /api/attributes/force/:id
-    @access  Public
+    @desc    Restore Attribute by ID 
+    @route   PATCH baseURL/api/v1/attributes/restore/:id
+    @access  PRIVATE | ADMIN
 */
-exports.forceDeleteAttribute = async (req, res) =>{
-    try {
-        const attribute = await  forceDeleteAttribute({id:req.params.id})
-    if(attribute){
-        return sendSuccessResponse(res , 'success' , null , statusCodes.OK)
-    }
-    return sendErrorResponse(res , 'This Brand Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR)
-    }
-}
+exports.restoreAttribute = asyncHandler( async (req, res, next)=>{
+    const attribute = await  attributeService.restoreAttribute(req.params.id)
+    return sendResponse(res, 'Restore Attribute successfully', {attribute}, StatusCodes.OK)
+})
+
+/*
+    @desc    force Delete Attribute
+    @route   DELETE baseURL/api/v1/attributes/force-delete/:id
+    @access  PRIVATE | ADMIN
+*/
+exports.forceDeleteAttribute = asyncHandler( async (req, res, next)=>{
+    await  attributeService.forceDeleteAttribute(req.params.id)
+    return sendResponse(res, 'Force Deleted Attribute successfully', null, StatusCodes.NO_CONTENT)
+})

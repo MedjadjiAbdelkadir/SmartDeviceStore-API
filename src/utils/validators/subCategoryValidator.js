@@ -1,12 +1,10 @@
 const { check, body } = require('express-validator');
-const slugify = require('slugify')
-
-const validatorMiddleware= require('../../middlewares/validatorMiddleware')
+const slugify = require('slugify');
+const validatorMiddleware = require('../../middleware/validatorMiddleware');
 
 exports.getSubCategoryValidator = [
-    check('id').notEmpty().withMessage('SubCategory id is Required')
-    .isNumeric().withMessage('SubCategory id is Number')
-    ,
+    check('id').notEmpty().withMessage('SubCategory id is Required'),
+    // .isUUID().withMessage('Category id is Invalid'),
     validatorMiddleware,
 ];
 
@@ -15,22 +13,25 @@ exports.createSubCategoryValidator = [
     body('name').notEmpty().withMessage('SubCategory name is Required')
     .isString().withMessage('SubCategory name is String')
     .trim()
-    .isLength({ min: 5 }).withMessage('Too short SubCategory name')
+    .isLength({ min: 2 }).withMessage('Too short SubCategory name')
     .isLength({ max: 40 }).withMessage('Too long SubCategory name')
     .custom((value, { req }) => {
         req.body.slug = slugify(value);
         return true;
     })
+
     ,
     validatorMiddleware,
 ];
 
 exports.updateSubCategoryValidator = [
-    check('id').notEmpty().withMessage('SubCategory id is Required'),
-    
+    check('id')
+        .notEmpty().withMessage('SubCategory id is Required'),
+        // .isUUID().withMessage('Category id is Invalid'),
+        
     body('name').optional().trim()
     .isString().withMessage('SubCategory name is String')
-    .isLength({ min: 5 }).withMessage('Too short SubCategory name')
+    .isLength({ min: 2 }).withMessage('Too short SubCategory name')
     .isLength({ max: 40 }).withMessage('Too long SubCategory name')
     .custom((value, { req }) => {
         req.body.slug = slugify(value);

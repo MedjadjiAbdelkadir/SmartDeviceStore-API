@@ -8,6 +8,7 @@ const Attribute = require("../../models/attribute")
 const Brand = require("../../models/brand")
 const ProductAttribute = require("../../models/productAttribute")
 const SubCategory = require("../../models/subCategory")
+const User = require("../../models/user")
 
 Product.belongsTo(Brand , {
     as :'brand',
@@ -32,6 +33,14 @@ Product.belongsToMany(Attribute, {
     },
     as: 'features' 
 });
+
+Product.belongsTo(User , {
+    as :'vendor',
+    foreignKey:{
+        name : 'vendor_id',
+    },
+    onDelete: 'CASCADE' , onUpdate: 'CASCADE'
+})
 
 // Product.belongsToMany(Attribute, { 
 //     through: ProductAttribute,

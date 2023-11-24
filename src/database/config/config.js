@@ -2,12 +2,10 @@ const fs = require('fs');
 
 require('dotenv').config();
 
-const { DATABASE_URL_DEV,DATABASE_TYPE} = process.env
-
 module.exports = {
     development: {
-        url : DATABASE_URL_DEV,
-        dialect: DATABASE_TYPE,
+        url : process.env.MYSQL_DATABASE_URL_DEV,
+        dialect: process.env.MYSQL_DATABASE_TYPE,
         dialectOptions: {
         bigNumberStrings: true
         }

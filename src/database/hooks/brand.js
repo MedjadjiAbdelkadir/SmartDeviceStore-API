@@ -5,7 +5,8 @@ const Product = require("../../models/product")
 
 Brand.addHook('beforeFind', (options) => {
     options.attributes = {
-        exclude: ['created_at','updated_at','deleted_at'], 
+        // created_at 'created_at',
+        exclude: ['updated_at','deleted_at'], 
     }
     options.include = [
         {

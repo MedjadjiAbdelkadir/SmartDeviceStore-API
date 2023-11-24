@@ -1,131 +1,100 @@
-const {statusCodes , errorMessages }= require('../utils/statusCodes')
-const { sendSuccessResponse , sendErrorResponse} = require('../utils/sendResponse')
+const asyncHandler = require("../utils/errorHandler")
+const { sendResponse } = require("../utils/sendResponse")
+const { StatusCodes } = require("../utils/status")
 
-const { getCategories, getCategory, createCategory, updateCategory, deleteCategory, restoreCategory, forceDeleteCategory} = require('../services/categoryService')
+const categoryService = require("../services/categoryService")
 
 /*
-    @desc    Get list of categories
-    @route   GET /api/categories
+    @desc    Get All Categories
+    @route   GET baseURL/api/v1/categories
     @access  Public
 */
-exports.getCategories = async (req, res) =>{
-    try {
-        const categories = await  getCategories()
-        if(categories.length > 0){
-            return sendSuccessResponse(res , 'success' , {categories} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'No categories' , statusCodes.NOT_FOUND)        
-    } catch (error) {
-        return sendErrorResponse(res , error.message, statusCodes.INTERNAL_SERVER_ERROR) 
-
-        // return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR) 
+exports.getCategories = asyncHandler( async (req, res, next) =>{
+    const { page = 1, limit = 5, sortBy, sortOrder, name, slug } = req.query;
+    const filters = {
+        page: +page ? page :1,
+        limit:+limit ? +limit :5,
+        sortBy, 
+        sortOrder, 
+        name, 
+        slug
     }
-}
+    const categories = await  categoryService.getCategories(filters)
+    return sendResponse(res, 'success', {categories} , StatusCodes.OK)
+})
 
 /*
-    @desc    Get Category by ID
-    @route   GET /api/categories/:id
+    @desc    Get Category By ID
+    @route   GET baseURL/api/v1/categories/:id
     @access  Public
 */
-exports.getCategory =async (req, res) =>{
-    try {
-        const category = await  getCategory({id:req.params.id})
-        if(category){
-            return sendSuccessResponse(res , 'success' , {category} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Category Not Found' , statusCodes.NOT_FOUND) 
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR) 
-    }    
-}
+exports.getCategory = asyncHandler( async (req, res, next)=>{
+    const category = await  categoryService.getCategory(req.params.id)
+    return sendResponse(res, 'success', {category} , StatusCodes.OK)
+})
 
 /*
-    @desc    Create Category
-    @route   POST /api/categories
-    @access  Public
+    @desc    Create Category 
+    @route   POST baseURL/api/v1/categories
+    @access  PRIVATE | ADMIN
 */
-exports.createCategory = async (req, res) =>{
-    try {
-        const { name, slug , image} = req.body
-        const category = await  createCategory({name,slug , image})
-        return sendSuccessResponse(res , 'Category created successfully' , {category} , statusCodes.CREATED) 
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR) 
-    }
-}
-
-// asyncHandler( )
+exports.createCategory= asyncHandler( async (req, res, next)=>{
+    const { name ,slug} = req.body
+    const category = await  categoryService.createCategory(name ,slug)
+    return sendResponse(res, 'Category created successfully', {category} , StatusCodes.CREATED)
+})
 
 /*
-    @desc    Update Category
-    @route   PATCH /api/subcategories
-    @access  Public
+    @desc    Update Category 
+    @route   PATCH baseURL/api/v1/categories/:id
+    @access  PRIVATE | ADMIN
 */
-exports.updateCategory = async (req, res) =>{
-    try {
-        const { id, name, slug, image} = req.body 
-        const category = await  updateCategory({id, name , slug , image})
-        if(category){
-            return sendSuccessResponse(res , 'Category updated successfully' , {category} , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Category Not Found' , statusCodes.NOT_FOUND)
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR) 
-    }
-}
+exports.updateCategory = asyncHandler( async (req, res, next)=>{
+    const {id} = req.params
+    const {name , slug} = req.body
+    const category = await  categoryService.updateCategory(id, name ,slug)
+    return sendResponse(res, 'Category updated successfully', {category} , StatusCodes.OK)
+
+})
 
 /*
-    @desc    Delete Category by ID
-    @route   DELETE /api/categories/:id
-    @access  Public
+    @desc    Delete Category 
+    @route   DELETE baseURL/api/v1/categories/:id
+    @access  PRIVATE | ADMIN
 */
-exports.deleteCategory =async (req, res) =>{
-    try {
-        const category = await  getCategory({id:req.params.id})
-        if(category){
-            await  deleteCategory({id:req.params.id})
-            return sendSuccessResponse(res , 'success' , null , statusCodes.NO_CONTENT)
-        }
-        return sendErrorResponse(res , 'This Category Not Found' , statusCodes.NOT_FOUND)   
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR) 
-    } 
-}
+exports.deleteCategory = asyncHandler( async (req, res, next)=>{
+    const {id} = req.params
+    await  categoryService.deleteCategory(id)
+    return sendResponse(res, 'Category deleted successfully', null, StatusCodes.NO_CONTENT)
+})
 
 /*
-    @desc    Restore Category by ID
-    @route   PATCH /api/categories/restore/:id
-    @access  Public
+    @desc    Get All Trash Categories
+    @route   GET baseURL/api/v1/categories/trash
+    @access  PRIVATE | ADMIN
 */
+exports.allTrashCategories = asyncHandler( async (req, res, next)=>{
+    const category = await  categoryService.allTrashCategories()
+    return sendResponse(res, 'All Trash Category', {category}, StatusCodes.OK)
 
-exports.restoreCategory = async (req, res) =>{
-    try {
-        const category = await  restoreCategory({id:req.params.id})
-        if(category){
-            return sendSuccessResponse(res , 'success' , category , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Category Not Found' , statusCodes.NOT_FOUND)    
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR) 
-    }
-}
+})
 
 /*
-    @desc    Force Delete Category by ID
-    @route   DELETE /api/categories/force/:id
-    @access  Public
+    @desc    Restore Category by ID 
+    @route   PATCH baseURL/api/v1/categories/restore/:id
+    @access  PRIVATE | ADMIN
 */
+exports.restoreCategory = asyncHandler( async (req, res, next)=>{
+    const category = await  categoryService.restoreCategory(req.params.id)
+    return sendResponse(res, 'Restore Category successfully', {category}, StatusCodes.OK)
+})
 
-
-exports.forceDeleteCategory = async (req, res) => {
-    try {
-        const category = await  forceDeleteCategory({id:req.params.id})
-        if(category){
-            return sendSuccessResponse(res , 'success' , null , statusCodes.OK)
-        }
-        return sendErrorResponse(res , 'This Category Not Found' , statusCodes.NOT_FOUND)
-        
-    } catch (error) {
-        return sendErrorResponse(res , errorMessages.INTERNAL_SERVER_ERROR, statusCodes.INTERNAL_SERVER_ERROR) 
-    }
-}
+/*
+    @desc    force Delete Category
+    @route   DELETE baseURL/api/v1/categories/force-delete/:id
+    @access  PRIVATE | ADMIN
+*/
+exports.forceDeleteCategory= asyncHandler( async (req, res, next)=>{
+    await  categoryService.forceDeleteCategory(req.params.id)
+    return sendResponse(res, 'Force Deleted Category successfully', null, StatusCodes.NO_CONTENT)
+})
