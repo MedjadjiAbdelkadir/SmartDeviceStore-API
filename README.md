@@ -83,4 +83,6 @@ EMAIL_USER : sender email password
 EMAIL_PASSWORD : sender email password
 
 ```
-5. Start the server: `npm run start`
+1. migrate the table: `npm run db:migrate`
+2. seed the database : `npm run db:seed`
+3. Start the server: `npm run start`
